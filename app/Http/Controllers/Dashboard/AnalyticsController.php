@@ -15,10 +15,10 @@ class AnalyticsController extends Controller
 
         // Placeholder stats — replace with real tracking data in the future
         $stats = [
-            'page_views'     => 0,
-            'widget_clicks'  => 0,
-            'search_queries' => 0,
-            'total_approved' => Testimonial::forUser($user->id)->where('status', 'approved')->count(),
+            'page_views'       => 0,
+            'widget_clicks'    => 0,
+            'search_queries'   => 0,
+            'approved_reviews' => Testimonial::forUser($user->id)->where('status', 'approved')->count(),
         ];
 
         return view('dashboard.analytics.index', compact('stats'));
