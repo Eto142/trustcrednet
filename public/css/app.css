@@ -1363,6 +1363,70 @@ body.is-inner-page #mainNav {
     .dash-topbar { padding: 0 16px; }
 }
 
+/* ── Table responsive wrapper ── */
+.dash-table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ── Mobile card layout for tables ── */
+.dash-mobile-cards { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+
+.dash-mobile-card {
+    background: #fff;
+    border: 1.5px solid var(--tcn-border);
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.dash-mobile-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.dash-mobile-card-name {
+    font-weight: 700;
+    font-size: .95rem;
+    color: var(--tcn-heading);
+}
+
+.dash-mobile-card-desc {
+    font-size: .75rem;
+    color: var(--tcn-gray);
+    margin-top: 2px;
+}
+
+.dash-mobile-card-meta { margin-bottom: 14px; }
+
+.dash-mobile-card-url {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--tcn-green-dark);
+    font-weight: 600;
+    font-size: .82rem;
+    text-decoration: none;
+    word-break: break-all;
+    margin-bottom: 8px;
+}
+
+.dash-mobile-card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: .84rem;
+}
+
+.dash-mobile-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding-top: 12px;
+    border-top: 1px solid var(--tcn-border);
+}
+
 
 
 /* ═══════════════════════════════════════════════════════
