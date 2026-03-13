@@ -1361,71 +1361,120 @@ body.is-inner-page #mainNav {
     .dash-stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
     .dash-content { padding: 16px; }
     .dash-topbar { padding: 0 16px; }
+    .dash-card { padding: 16px; }
+    .dash-card-header { flex-wrap: wrap; }
 }
 
 /* ── Table responsive wrapper ── */
 .dash-table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* ── Mobile card layout for tables ── */
-.dash-mobile-cards { display: flex; flex-direction: column; gap: 12px; padding: 16px; }
+.dash-mobile-cards { display: flex; flex-direction: column; gap: 12px; padding: 4px 0 0; }
 
 .dash-mobile-card {
     background: #fff;
     border: 1.5px solid var(--tcn-border);
-    border-radius: 12px;
-    padding: 16px;
+    border-radius: 14px;
+    padding: 18px;
+    transition: box-shadow .2s;
 }
+.dash-mobile-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); }
 
-.dash-mobile-card-header {
+.dash-mobile-card-top {
     display: flex;
     align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 12px;
+    margin-bottom: 10px;
 }
+
+.dash-mobile-card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--tcn-green-pale);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    color: var(--tcn-green);
+    flex-shrink: 0;
+}
+
+.dash-mobile-card-info { flex: 1; min-width: 0; }
 
 .dash-mobile-card-name {
-    font-weight: 700;
+    font-weight: 800;
     font-size: .95rem;
     color: var(--tcn-heading);
+    line-height: 1.2;
 }
-
-.dash-mobile-card-desc {
-    font-size: .75rem;
-    color: var(--tcn-gray);
-    margin-top: 2px;
-}
-
-.dash-mobile-card-meta { margin-bottom: 14px; }
 
 .dash-mobile-card-url {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     color: var(--tcn-green-dark);
     font-weight: 600;
-    font-size: .82rem;
+    font-size: .76rem;
     text-decoration: none;
+    margin-top: 3px;
     word-break: break-all;
-    margin-bottom: 8px;
+}
+.dash-mobile-card-url i { font-size: .65rem; }
+
+.dash-mobile-card-desc {
+    font-size: .78rem;
+    color: var(--tcn-gray);
+    line-height: 1.45;
+    margin-bottom: 12px;
+    padding-left: 54px;
 }
 
-.dash-mobile-card-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.dash-mobile-card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
-    font-size: .84rem;
+    margin-bottom: 14px;
+}
+
+.dash-mobile-stat {
+    background: var(--tcn-light);
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-align: center;
+    text-decoration: none;
+}
+a.dash-mobile-stat:hover { background: var(--tcn-green-pale); }
+
+.dash-mobile-stat-val {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--tcn-heading);
+    line-height: 1.2;
+}
+
+.dash-mobile-stat-lbl {
+    display: block;
+    font-size: .68rem;
+    font-weight: 600;
+    color: var(--tcn-gray);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-top: 2px;
 }
 
 .dash-mobile-card-actions {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
-    padding-top: 12px;
+    padding-top: 14px;
     border-top: 1px solid var(--tcn-border);
 }
+
+.dash-mobile-action { flex: 1; justify-content: center; }
+.dash-mobile-card-actions form { flex: 1; }
+.dash-mobile-card-actions form .dash-mobile-action { width: 100%; }
 
 
 

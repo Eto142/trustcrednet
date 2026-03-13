@@ -96,12 +96,15 @@
         <div class="dash-mobile-cards d-md-none">
             @foreach($websites as $website)
             <div class="dash-mobile-card">
-                <div class="dash-mobile-card-header">
-                    <div>
+                <div class="dash-mobile-card-top">
+                    <div class="dash-mobile-card-icon">
+                        <i class="bi bi-globe2"></i>
+                    </div>
+                    <div class="dash-mobile-card-info">
                         <div class="dash-mobile-card-name">{{ $website->name }}</div>
-                        @if($website->description)
-                            <div class="dash-mobile-card-desc">{{ Str::limit($website->description, 80) }}</div>
-                        @endif
+                        <a href="{{ $website->url }}" target="_blank" rel="noopener" class="dash-mobile-card-url">
+                            {{ Str::limit($website->url, 36) }} <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
                     </div>
                     @if($website->is_active)
                         <span class="dash-badge dash-badge-green"><i class="bi bi-check-circle-fill"></i> Active</span>
@@ -110,38 +113,37 @@
                     @endif
                 </div>
 
-                <div class="dash-mobile-card-meta">
-                    <a href="{{ $website->url }}" target="_blank" rel="noopener" class="dash-mobile-card-url">
-                        <i class="bi bi-box-arrow-up-right"></i> {{ Str::limit($website->url, 50) }}
+                @if($website->description)
+                    <div class="dash-mobile-card-desc">{{ Str::limit($website->description, 100) }}</div>
+                @endif
+
+                <div class="dash-mobile-card-stats">
+                    <a href="{{ route('dashboard.testimonials.index', ['website_id' => $website->id]) }}" class="dash-mobile-stat">
+                        <span class="dash-mobile-stat-val">{{ $website->testimonials_count ?? $website->testimonials()->count() }}</span>
+                        <span class="dash-mobile-stat-lbl">Reviews</span>
                     </a>
-                    <div class="dash-mobile-card-row">
-                        <span>
-                            <a href="{{ route('dashboard.testimonials.index', ['website_id' => $website->id]) }}"
-                               style="font-weight:700;color:var(--tcn-heading);text-decoration:none;">
-                                {{ $website->testimonials_count ?? $website->testimonials()->count() }}
-                                <span style="font-weight:400;color:var(--tcn-gray);"> reviews</span>
-                            </a>
-                        </span>
-                        <span style="color:var(--tcn-gray);font-size:.8rem;">{{ $website->created_at->format('M j, Y') }}</span>
+                    <div class="dash-mobile-stat">
+                        <span class="dash-mobile-stat-val">{{ $website->created_at->format('M j') }}</span>
+                        <span class="dash-mobile-stat-lbl">{{ $website->created_at->format('Y') }}</span>
                     </div>
                 </div>
 
                 <div class="dash-mobile-card-actions">
                     @if($website->slug)
                     <a href="{{ $website->public_url }}" target="_blank" rel="noopener"
-                       class="dash-btn dash-btn-outline dash-btn-sm" title="View public profile">
+                       class="dash-btn dash-btn-outline dash-btn-sm dash-mobile-action">
                         <i class="bi bi-eye"></i> View
                     </a>
                     @endif
                     <a href="{{ route('dashboard.websites.edit', $website) }}"
-                       class="dash-btn dash-btn-outline dash-btn-sm">
+                       class="dash-btn dash-btn-outline dash-btn-sm dash-mobile-action">
                         <i class="bi bi-pencil"></i> Edit
                     </a>
                     <form method="POST" action="{{ route('dashboard.websites.destroy', $website) }}"
                           onsubmit="return confirm('Delete this website and all its testimonials?')">
                         @csrf @method('DELETE')
-                        <button type="submit" class="dash-btn dash-btn-danger dash-btn-sm">
-                            <i class="bi bi-trash3"></i>
+                        <button type="submit" class="dash-btn dash-btn-danger dash-btn-sm dash-mobile-action">
+                            <i class="bi bi-trash3"></i> Delete
                         </button>
                     </form>
                 </div>
