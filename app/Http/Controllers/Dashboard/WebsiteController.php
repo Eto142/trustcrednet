@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
-
 class WebsiteController extends Controller
 {
     public function index(): View
@@ -19,13 +18,22 @@ class WebsiteController extends Controller
         return view('dashboard.websites.index', compact('websites', 'paymentSettings'));
     }
 
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
+        if (Auth::user()->websites()->exists()) {
+            return redirect()->route('dashboard.websites.index')
+                ->with('error', 'You can only add one website.');
+        }
         return view('dashboard.websites.create');
     }
 
     public function store(Request $request): RedirectResponse
     {
+        if (Auth::user()->websites()->exists()) {
+            return redirect()->route('dashboard.websites.index')
+                ->with('error', 'You can only add one website.');
+        }
+
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
             'url'         => ['required', 'url', 'max:255'],

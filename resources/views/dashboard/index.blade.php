@@ -58,10 +58,17 @@
                 <div class="dash-empty">
                     <i class="bi bi-chat-square-quote"></i>
                     <div class="dash-empty-title">No testimonials yet</div>
-                    <p class="dash-empty-sub">Add your first website to start collecting testimonials.</p>
-                    <a href="{{ route('dashboard.websites.create') }}" class="dash-btn dash-btn-primary">
-                        <i class="bi bi-plus-lg"></i> Add a Website
-                    </a>
+                    @if($websiteCount > 0)
+                        <p class="dash-empty-sub">Your website is set up. Now add your first testimonial.</p>
+                        <a href="{{ route('dashboard.testimonials.create') }}" class="dash-btn dash-btn-primary">
+                            <i class="bi bi-plus-lg"></i> Add Testimonial
+                        </a>
+                    @else
+                        <p class="dash-empty-sub">Add your first website to start collecting testimonials.</p>
+                        <a href="{{ route('dashboard.websites.create') }}" class="dash-btn dash-btn-primary">
+                            <i class="bi bi-plus-lg"></i> Add a Website
+                        </a>
+                    @endif
                 </div>
             @else
                 <table class="dash-table">
@@ -109,9 +116,11 @@
         <div class="dash-card">
             <h2 class="dash-card-title" style="margin-bottom:16px;">Quick Actions</h2>
             <div class="d-flex flex-column gap-2">
+                @if($websiteCount === 0)
                 <a href="{{ route('dashboard.websites.create') }}" class="dash-btn dash-btn-outline" style="justify-content:flex-start;">
                     <i class="bi bi-plus-circle-fill" style="color:var(--tcn-green);"></i> Add New Website
                 </a>
+                @endif
                 <a href="{{ route('dashboard.testimonials.create') }}" class="dash-btn dash-btn-outline" style="justify-content:flex-start;">
                     <i class="bi bi-chat-plus-fill" style="color:#4F46E5;"></i> Add Testimonial
                 </a>

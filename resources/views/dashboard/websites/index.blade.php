@@ -7,7 +7,7 @@
 <div class="dash-card">
     <div class="dash-card-header">
         <h2 class="dash-card-title">Your Websites</h2>
-        @if($websites->total() < Auth::user()->website_limit)
+        @if($websites->isEmpty())
         <a href="{{ route('dashboard.websites.create') }}" class="dash-btn dash-btn-primary">
             <i class="bi bi-plus-lg"></i> Add Website
         </a>
