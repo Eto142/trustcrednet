@@ -16,20 +16,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Seed admin user (skip if already exists)
+        if (!Admin::where('email', 'admin@mail.com')->exists()) {
+            Admin::create([
+                'name'     => 'Admin',
+                'email'    => 'admin@mail.com',
+                'password' => bcrypt('12345678'),
+            ]);
+        }
 
-
-        // Seed admin user only
-        Admin::create([
-            'name' => 'Admin',
-            'email' => 'admin@mail.com',
-            'password' => bcrypt('12345678'),
-        ]);
-
-        Admin::create([
-            'name' => 'Admin',
-            'email' => 'admin@mail.com',
-            'password' => bcrypt('12345678'),
-        ]);
+        $this->call(BusinessSeeder::class);
     }
 }

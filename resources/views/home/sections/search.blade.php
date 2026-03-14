@@ -46,6 +46,46 @@
             <span class="cat-chip" onclick="quickSearch('Education')"><i class="bi bi-book"></i>Education</span>
         </div>
 
+        {{-- Featured businesses (shown by default, hidden while searching) --}}
+        @if(isset($featured) && $featured->isNotEmpty())
+        <div class="featured-businesses fade-up d2" id="featuredBusinesses">
+            <p class="featured-label">
+                <i class="bi bi-patch-check-fill" style="color:var(--tcn-green);"></i>
+                Featured Businesses
+            </p>
+            <div class="featured-grid">
+                @foreach($featured as $biz)
+                @php
+                    $initials = strtoupper(implode('', array_map(fn($w) => $w[0] ?? '', array_slice(explode(' ', preg_replace('/[^a-zA-Z0-9 ]/', '', $biz->name)), 0, 2))));
+                    $initials = $initials ?: '?';
+                    $rating   = $biz->approved_testimonials_avg_rating ? round($biz->approved_testimonials_avg_rating, 1) : null;
+                    $count    = $biz->approved_testimonials_count ?? 0;
+                    $colors   = ['#2563EB','#10B981','#7C3AED','#0891B2','#F59E0B','#EF4444','#0F172A','#059669'];
+                    $color    = $colors[$loop->index % count($colors)];
+                @endphp
+                <a href="{{ url('/' . $biz->slug) }}" class="featured-card">
+                    @if($biz->user?->logo_path)
+                        <img src="{{ $biz->user->logo_path }}" class="featured-avatar featured-avatar-img" alt="{{ $biz->name }}">
+                    @else
+                        <div class="featured-avatar" style="background:{{ $color }};">{{ $initials }}</div>
+                    @endif
+                    <div class="featured-info">
+                        <div class="featured-name">{{ $biz->name }}</div>
+                        <div class="featured-meta">
+                            @if($rating)
+                                <span style="color:#F5A623;">{{ str_repeat('★', (int)round($rating)) }}{{ str_repeat('☆', 5 - (int)round($rating)) }}</span>
+                                <span class="featured-rating">{{ $rating }}</span>
+                            @endif
+                            <span class="featured-count">{{ $count }} {{ Str::plural('review', $count) }}</span>
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-right featured-arrow"></i>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
         {{-- Trust Stats Strip --}}
         <div class="search-stats-strip fade-up d3">
             <div class="ss-stat">
@@ -75,6 +115,8 @@ let _searchTimer = null;
 function debounceSearch() {
     clearTimeout(_searchTimer);
     const q = document.getElementById('mainSearchInput').value.trim();
+    const featured = document.getElementById('featuredBusinesses');
+    if (featured) featured.style.display = q.length >= 2 ? 'none' : '';
     if (q.length < 2) {
         renderResults(null);
         return;
