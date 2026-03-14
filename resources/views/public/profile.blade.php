@@ -206,7 +206,7 @@
                     <div class="prof-claim-icon"><i class="bi bi-shield-fill-check"></i></div>
                     <h4 class="prof-claim-title">Own a business?</h4>
                     <p class="prof-claim-text">Collect and display verified reviews for free with TrustCredNet.</p>
-                    <a href="{{ route('register') }}" class="prof-claim-btn">
+                    <a href="{{ route('contact') }}" class="prof-claim-btn">
                         Get Started Free <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -302,7 +302,7 @@
         <i class="bi bi-shield-fill-check"></i> TrustCredNet
     </a>
     <span class="prof-powered-sep">&middot;</span>
-    <a href="{{ route('register') }}">Collect reviews for your business, free →</a>
+    <a href="{{ route('contact') }}">Collect reviews for your business, free →</a>
 </div>
 
 @endsection
