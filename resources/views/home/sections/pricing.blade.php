@@ -18,7 +18,7 @@
 
         <div class="pricing-grid">
 
-            {{-- Starter --}}
+            {{-- Starter (free tier hidden)
             <div class="price-card fade-up d1">
                 <div class="plan-name">Starter</div>
                 <div class="price-amount-wrap">
@@ -38,6 +38,7 @@
                 </ul>
                 <a href="#" class="price-cta">Get Started Free</a>
             </div>
+            --}}
 
             {{-- Growth (popular) --}}
             <div class="price-card popular fade-up d2">
