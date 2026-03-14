@@ -15,6 +15,10 @@
         <p class="page-subtitle">User profile details</p>
     </div>
     <div class="page-header-actions" style="display: flex; gap: 8px;">
+        <a href="{{ route('admin.users.edit', $user) }}" class="btn-admin btn-admin-primary">
+            <i class="bi bi-pencil"></i>
+            Edit User
+        </a>
         <a href="{{ route('admin.users.email', $user) }}" class="btn-admin btn-admin-primary">
             <i class="bi bi-envelope"></i>
             Send Email
@@ -35,6 +39,13 @@
 </div>
 
 <div class="row g-4">
+@if(session('message'))
+<div class="col-12">
+    <div style="padding:11px 16px;border-radius:8px;background:#D1FAE5;border:1px solid #6EE7B7;color:#065F46;display:flex;align-items:center;gap:10px;font-size:.88rem;">
+        <i class="bi bi-check-circle-fill"></i> {{ session('message') }}
+    </div>
+</div>
+@endif
     <!-- User Info Card -->
     <div class="col-lg-4">
         <div class="admin-card">
@@ -56,6 +67,17 @@
                         <a href="{{ $user->website_url }}" target="_blank" style="color: var(--admin-primary-light);">{{ $user->website_url }}</a>
                     </div>
                     @endif
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                        <span style="color: var(--admin-text-muted); flex-shrink:0;">Website Limit</span>
+                        <form method="POST" action="{{ route('admin.users.update', $user) }}" style="display:flex;align-items:center;gap:6px;">
+                            @csrf @method('PUT')
+                            <input type="number" name="website_limit" min="1" value="{{ $user->website_limit }}"
+                                   style="width:72px;padding:3px 8px;border:1px solid var(--admin-border);border-radius:6px;font-size:.85rem;color:var(--admin-text);background:var(--admin-bg);text-align:center;">
+                            <button type="submit" title="Save" style="background:var(--admin-primary);color:#fff;border:none;border-radius:6px;padding:4px 9px;font-size:.8rem;cursor:pointer;line-height:1.4;">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                        </form>
+                    </div>
                     <div style="display: flex; justify-content: space-between;">
                         <span style="color: var(--admin-text-muted);">Websites</span>
                         <span style="color: var(--admin-text);">{{ $user->websites_count }}</span>

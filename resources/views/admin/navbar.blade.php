@@ -53,6 +53,12 @@
                 <div class="nav-section-title">Settings</div>
                 <ul style="list-style: none; padding: 0; margin: 0;">
                     <li class="nav-item">
+                        <a href="{{ route('admin.settings.payment') }}" class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
+                            <i class="bi bi-credit-card-fill"></i>
+                            <span class="nav-text">Payment Settings</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{{ url('/') }}" class="nav-link" target="_blank">
                             <i class="bi bi-globe"></i>
                             <span class="nav-text">Visit Site</span>

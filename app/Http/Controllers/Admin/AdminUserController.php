@@ -23,6 +23,20 @@ class AdminUserController extends Controller
         return view('admin.user_show', compact('user', 'testimonials'));
     }
 
+    public function edit(User $user)
+    {
+        return view('admin.user_edit', compact('user'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'website_limit' => ['required', 'integer', 'min:1'],
+        ]);
+        $user->update($data);
+        return redirect()->route('admin.users.show', $user)->with('message', 'User updated successfully.');
+    }
+
     public function destroy(User $user)
     {
         $user->delete();

@@ -27,6 +27,10 @@ class User extends Authenticatable
         'website_url',
         'logo_path',
         'is_admin',
+        'website_limit',
+        'payment_method',
+        'payment_reference',
+        'payment_verified_at',
     ];
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use App\Models\Website;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ class WebsiteController extends Controller
     public function index(): View
     {
         $websites = Auth::user()->websites()->withCount('testimonials')->latest()->paginate(15);
-        return view('dashboard.websites.index', compact('websites'));
+        $paymentSettings = Setting::payment();
+        return view('dashboard.websites.index', compact('websites', 'paymentSettings'));
     }
 
     public function create(): View
@@ -39,7 +41,8 @@ class WebsiteController extends Controller
         ]);
 
         return redirect()->route('dashboard.websites.index')
-            ->with('success', 'Website added! It will be visible once approved by an admin.');
+            ->with('success', 'Website added successfully!')
+            ->with('show_activation', true);
     }
 
     public function edit(Website $website): View
