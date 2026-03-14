@@ -1,75 +1,162 @@
 @extends('layouts.tcn')
 
-@section('title', $website->name . ' Reviews – TrustCredNet')
+@section('title', $website->name . ' Reviews & Ratings – TrustCredNet | Verified Business Testimonials')
 
 @php
+    use Illuminate\Support\Str;
+
+    $reviewWord   = Str::plural('review', $total);
+    $ratingStr    = $avgRating ? number_format($avgRating, 1) . '/5' : null;
+    $hostName     = $website->url ? (parse_url($website->url, PHP_URL_HOST) ?: $website->url) : null;
+
     $metaDescription = $website->description
-        ? Str::limit($website->description, 140) . ' — Read ' . $total . ' verified customer ' . Str::plural('review', $total) . ' on TrustCredNet.'
-        : 'Read ' . $total . ' verified customer ' . Str::plural('review', $total) . ' for ' . $website->name . ' on TrustCredNet. See ratings, testimonials and more.';
+        ? Str::limit($website->description, 155)
+        : ($ratingStr
+            ? $website->name . ' has a ' . $ratingStr . ' star rating from ' . $total . ' verified ' . $reviewWord . '. Read real customer testimonials for ' . $website->name . ($hostName ? ' (' . $hostName . ')' : '') . ' on TrustCredNet.'
+            : 'Read ' . $total . ' verified customer ' . $reviewWord . ' for ' . $website->name . ($hostName ? ' (' . $hostName . ')' : '') . ' on TrustCredNet. See ratings, testimonials and more.');
 
     $canonicalUrl = url('/' . $website->slug);
     $ogImage      = $website->user->logo_path ?: asset('images/og-default.png');
+
+    $keywords = collect([
+        $website->name . ' reviews',
+        $website->name . ' testimonials',
+        $website->name . ' ratings',
+        $website->name . ' trustworthy',
+        $website->name . ' legit',
+        $website->name . ' customer reviews',
+        $website->name . ' verified reviews',
+        $hostName ? $hostName . ' reviews' : null,
+        $hostName ? $hostName . ' legit' : null,
+        $website->user->business_name ? $website->user->business_name . ' reviews' : null,
+        'TrustCredNet ' . $website->name,
+    ])->filter()->implode(', ');
 @endphp
 
 @section('description', $metaDescription)
+@section('keywords', $keywords)
 
 @section('head')
 {{-- Canonical --}}
 <link rel="canonical" href="{{ $canonicalUrl }}">
 
+{{-- Indexing directives --}}
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="googlebot" content="index, follow">
+
+{{-- Keywords --}}
+<meta name="keywords" content="{{ $keywords }}">
+
 {{-- Open Graph --}}
 <meta property="og:type"        content="website">
 <meta property="og:url"         content="{{ $canonicalUrl }}">
-<meta property="og:title"       content="{{ $website->name }} Reviews – TrustCredNet">
+<meta property="og:title"       content="{{ $website->name }} Reviews{{ $ratingStr ? ' – ' . $ratingStr . ' Stars' : '' }} | TrustCredNet">
 <meta property="og:description" content="{{ $metaDescription }}">
 <meta property="og:image"       content="{{ $ogImage }}">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:site_name"   content="TrustCredNet">
+<meta property="og:locale"      content="en_US">
 
 {{-- Twitter Card --}}
-<meta name="twitter:card"        content="summary">
-<meta name="twitter:title"       content="{{ $website->name }} Reviews – TrustCredNet">
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="{{ $website->name }} Reviews{{ $ratingStr ? ' – ' . $ratingStr . ' Stars' : '' }} | TrustCredNet">
 <meta name="twitter:description" content="{{ $metaDescription }}">
 <meta name="twitter:image"       content="{{ $ogImage }}">
 
-{{-- JSON-LD structured data — enables star ratings in Google search results --}}
+{{-- JSON-LD: LocalBusiness + AggregateRating + Reviews --}}
 @php
-    $jsonLd = [
+    $jsonLdBusiness = [
         '@context' => 'https://schema.org',
-        '@type'    => 'LocalBusiness',
+        '@type'    => ['LocalBusiness', 'Organization'],
+        '@id'      => $canonicalUrl . '#business',
         'name'     => $website->name,
+        'url'      => $website->url ?: $canonicalUrl,
+        'mainEntityOfPage' => $canonicalUrl,
     ];
-    if ($website->url)         { $jsonLd['url']         = $website->url; }
-    if ($website->description) { $jsonLd['description'] = Str::limit($website->description, 200); }
-    if ($website->user->logo_path) {
-        $jsonLd['logo']  = $website->user->logo_path;
-        $jsonLd['image'] = $website->user->logo_path;
+    if ($website->description) {
+        $jsonLdBusiness['description'] = $website->description;
     }
-    $jsonLd['sameAs'] = [$canonicalUrl];
+    if ($website->user->logo_path) {
+        $jsonLdBusiness['logo']  = ['@type' => 'ImageObject', 'url' => $website->user->logo_path];
+        $jsonLdBusiness['image'] = $website->user->logo_path;
+    }
+    $jsonLdBusiness['sameAs'] = array_filter([$website->url, $canonicalUrl]);
     if ($total > 0 && $avgRating) {
-        $jsonLd['aggregateRating'] = [
+        $jsonLdBusiness['aggregateRating'] = [
             '@type'       => 'AggregateRating',
             'ratingValue' => number_format($avgRating, 1),
             'bestRating'  => '5',
             'worstRating' => '1',
             'reviewCount' => (string) $total,
         ];
-        if ($website->approvedTestimonials->isNotEmpty()) {
-            $jsonLd['review'] = $website->approvedTestimonials->take(5)->map(fn ($t) => [
-                '@type'        => 'Review',
-                'author'       => ['@type' => 'Person', 'name' => $t->author_name],
-                'datePublished'=> ($t->reviewed_at ?? $t->created_at)->toDateString(),
-                'reviewRating' => [
-                    '@type'       => 'Rating',
-                    'ratingValue' => (string) $t->rating,
-                    'bestRating'  => '5',
-                    'worstRating' => '1',
-                ],
-                'reviewBody' => Str::limit($t->content, 300),
-            ])->values()->toArray();
-        }
     }
+    if ($website->approvedTestimonials->isNotEmpty()) {
+        $jsonLdBusiness['review'] = $website->approvedTestimonials->take(10)->map(fn ($t) => [
+            '@type'         => 'Review',
+            'author'        => ['@type' => 'Person', 'name' => $t->author_name],
+            'datePublished' => ($t->reviewed_at ?? $t->created_at)->toDateString(),
+            'reviewRating'  => [
+                '@type'       => 'Rating',
+                'ratingValue' => (string) $t->rating,
+                'bestRating'  => '5',
+                'worstRating' => '1',
+            ],
+            'reviewBody'    => $t->content,
+            'publisher'     => ['@type' => 'Organization', 'name' => 'TrustCredNet', 'url' => url('/')],
+        ])->values()->toArray();
+    }
+
+    // JSON-LD: WebPage
+    $jsonLdPage = [
+        '@context'        => 'https://schema.org',
+        '@type'           => 'WebPage',
+        '@id'             => $canonicalUrl,
+        'url'             => $canonicalUrl,
+        'name'            => $website->name . ' Reviews – TrustCredNet',
+        'description'     => $metaDescription,
+        'inLanguage'      => 'en-US',
+        'isPartOf'        => ['@type' => 'WebSite', 'url' => url('/'), 'name' => 'TrustCredNet'],
+        'about'           => ['@id' => $canonicalUrl . '#business'],
+        'dateModified'    => $website->updated_at->toIso8601String(),
+    ];
+
+    // JSON-LD: BreadcrumbList
+    $jsonLdBreadcrumb = [
+        '@context'        => 'https://schema.org',
+        '@type'           => 'BreadcrumbList',
+        'itemListElement' => [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home',    'item' => url('/')],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Reviews', 'item' => url('/search')],
+            ['@type' => 'ListItem', 'position' => 3, 'name' => $website->name . ' Reviews', 'item' => $canonicalUrl],
+        ],
+    ];
+
+    // JSON-LD: FAQPage — helps capture FAQ rich snippets
+    $faqEntries = [];
+    if ($total > 0 && $avgRating) {
+        $faqEntries[] = [
+            '@type'          => 'Question',
+            'name'           => 'What is the rating for ' . $website->name . '?',
+            'acceptedAnswer' => ['@type' => 'Answer', 'text' => $website->name . ' has an average rating of ' . number_format($avgRating, 1) . ' out of 5 based on ' . $total . ' verified customer ' . $reviewWord . ' on TrustCredNet.'],
+        ];
+    }
+    $faqEntries[] = [
+        '@type'          => 'Question',
+        'name'           => 'Is ' . $website->name . ' legit and trustworthy?',
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => $website->name . ' is listed and verified on TrustCredNet, a platform for collecting and displaying authentic customer testimonials.' . ($total > 0 ? ' It has ' . $total . ' verified customer ' . $reviewWord . '.' : '')],
+    ];
+    $faqEntries[] = [
+        '@type'          => 'Question',
+        'name'           => 'Where can I read reviews for ' . $website->name . '?',
+        'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'You can read all verified reviews for ' . $website->name . ' on TrustCredNet at ' . $canonicalUrl],
+    ];
+    $jsonLdFaq = ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => $faqEntries];
 @endphp
-<script type="application/ld+json">{!! json_encode($jsonLd, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}</script>
+<script type="application/ld+json">{!! json_encode($jsonLdBusiness,   JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+<script type="application/ld+json">{!! json_encode($jsonLdPage,       JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+<script type="application/ld+json">{!! json_encode($jsonLdBreadcrumb, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+<script type="application/ld+json">{!! json_encode($jsonLdFaq,        JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 @endsection
 
 @section('content')
@@ -304,5 +391,27 @@
     <span class="prof-powered-sep">&middot;</span>
     <a href="{{ route('contact') }}">Collect reviews for your business, free →</a>
 </div>
+
+{{-- SEO: semantically rich summary for crawlers --}}
+<section aria-label="Review summary" style="border-top:1px solid var(--tcn-border);background:var(--tcn-light);padding:32px 0;">
+    <div class="container">
+        <div style="max-width:720px;margin:0 auto;">
+            <h2 style="font-size:1.1rem;font-weight:700;color:var(--tcn-heading);margin-bottom:10px;">
+                About {{ $website->name }} Reviews on TrustCredNet
+            </h2>
+            <p style="font-size:.88rem;color:var(--tcn-gray);line-height:1.7;margin-bottom:10px;">
+                This page contains <strong>{{ $total }} verified {{ Str::plural('customer review', $total) }}</strong>
+                for <strong>{{ $website->name }}</strong>{{ $hostName ? ' (' . $hostName . ')' : '' }}.
+                @if($ratingStr) The overall rating is <strong>{{ $ratingStr }} stars</strong> based on authentic testimonials collected via TrustCredNet. @endif
+                All reviews on TrustCredNet are submitted by real customers and go through a moderation process before being published.
+            </p>
+            <p style="font-size:.88rem;color:var(--tcn-gray);line-height:1.7;margin-bottom:0;">
+                Looking for honest opinions about {{ $website->name }}? Read genuine feedback from verified customers above.
+                TrustCredNet helps businesses collect, manage and publicly display trusted reviews — making it easy for consumers to make informed decisions.
+                @if($website->url) Visit <a href="{{ $website->url }}" rel="noopener" style="color:var(--tcn-green);">{{ $hostName }}</a> to learn more about the business. @endif
+            </p>
+        </div>
+    </div>
+</section>
 
 @endsection

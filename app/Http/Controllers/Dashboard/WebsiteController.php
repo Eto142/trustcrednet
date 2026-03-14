@@ -66,7 +66,7 @@ class WebsiteController extends Controller
         $data = $request->validate([
             'name'        => ['required', 'string', 'max:255'],
             'url'         => ['required', 'url', 'max:255'],
-            'description' => ['nullable', 'string', 'max:1000'],
+            'description' => ['nullable', 'string', 'max:5000'],
         ]);
 
         $website->update([

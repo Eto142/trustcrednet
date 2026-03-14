@@ -63,6 +63,12 @@
 
                 <div class="dash-nav-label" style="margin-top:12px;">Account</div>
 
+                <a href="{{ route('dashboard.plan') }}"
+                   class="dash-nav-link {{ request()->routeIs('dashboard.plan') ? 'active' : '' }}">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                    <span>My Plan</span>
+                </a>
+
                 <a href="{{ route('dashboard.settings') }}"
                    class="dash-nav-link {{ request()->routeIs('dashboard.settings') ? 'active' : '' }}">
                     <i class="bi bi-gear-fill"></i>

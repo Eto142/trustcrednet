@@ -36,9 +36,14 @@
 
         <div class="dash-form-group">
             <label class="dash-form-label" for="description">Description <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span></label>
-            <textarea id="description" name="description" rows="3"
+            <textarea id="description" name="description" rows="6"
                       class="dash-form-input {{ $errors->has('description') ? 'is-invalid' : '' }}"
-                      placeholder="Short description of this website or product…">{{ old('description') }}</textarea>
+                      maxlength="5000"
+                      placeholder="Short description of this website or product…"
+                      oninput="document.getElementById('desc-count').textContent=this.value.length">{{ old('description') }}</textarea>
+            <div class="dash-form-help" style="text-align:right;">
+                <span id="desc-count">{{ strlen(old('description','')) }}</span> / 5000
+            </div>
             @error('description') <div class="dash-form-error">{{ $message }}</div> @enderror
         </div>
 

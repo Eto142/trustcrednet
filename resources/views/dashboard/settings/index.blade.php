@@ -123,32 +123,18 @@
         </form>
     </div>
 
-    {{-- Subscription (placeholder) --}}
+    {{-- Subscription --}}
     <div class="dash-card">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
             <div>
-                <h2 class="dash-card-title" style="margin-bottom:6px;">Subscription</h2>
+                <h2 class="dash-card-title" style="margin-bottom:4px;">Subscription</h2>
                 <p style="font-size:.84rem;color:var(--tcn-gray);margin:0;">
-                    You are currently on the <strong>Free Plan</strong>.
+                    View your current plan, payment details, and how to activate.
                 </p>
             </div>
-            <a href="{{ route('pricing') }}" class="dash-btn dash-btn-primary">
-                <i class="bi bi-lightning-charge-fill"></i> Upgrade Plan
+            <a href="{{ route('dashboard.plan') }}" class="dash-btn dash-btn-primary">
+                <i class="bi bi-lightning-charge-fill"></i> Manage Plan
             </a>
-        </div>
-        <div style="margin-top:18px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;">
-            @foreach([
-                ['icon' => 'bi-globe2',             'label' => 'Websites',          'free' => '3',     'pro' => 'Unlimited'],
-                ['icon' => 'bi-chat-quote-fill',    'label' => 'Testimonials/site', 'free' => '50',    'pro' => 'Unlimited'],
-                ['icon' => 'bi-code-square',        'label' => 'Embed Styles',      'free' => '1',     'pro' => 'All styles'],
-                ['icon' => 'bi-bar-chart-line-fill','label' => 'Analytics',         'free' => 'Basic', 'pro' => 'Full'],
-            ] as $item)
-            <div style="background:var(--tcn-light);border:1.5px solid var(--tcn-border);border-radius:10px;padding:14px;">
-                <i class="bi {{ $item['icon'] }}" style="color:var(--tcn-green);font-size:.95rem;margin-bottom:6px;display:block;"></i>
-                <div style="font-size:.75rem;font-weight:700;color:var(--tcn-heading);">{{ $item['label'] }}</div>
-                <div style="font-size:.7rem;color:var(--tcn-gray);margin-top:2px;">Free: {{ $item['free'] }} · Pro: {{ $item['pro'] }}</div>
-            </div>
-            @endforeach
         </div>
     </div>
 

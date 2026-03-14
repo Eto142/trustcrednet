@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="@yield('description', 'Collect, manage, and display customer reviews with TrustCredNet.')">
+    @hasSection('keywords')<meta name="keywords" content="@yield('keywords')">@endif
     <title>@yield('title', 'TrustCredNet – Build Trust. Showcase Your Reviews.')</title>
 
     <!-- Open Graph -->

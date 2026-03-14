@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Dashboard\AnalyticsController;
 use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\PlanController;
 use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\TestimonialController;
 use App\Http\Controllers\Dashboard\WebsiteController;
@@ -12,10 +13,12 @@ use App\Http\Controllers\Dashboard\WidgetController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 // --- Public pages ---
 Route::get('/',          [HomeController::class, 'index'])->name('home');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/search',    [SearchController::class, 'search'])->name('search');
 Route::get('/features',  fn () => view('pages.features'))->name('features');
 Route::get('/pricing',   fn () => view('pages.pricing'))->name('pricing');
@@ -48,6 +51,8 @@ Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(functi
     Route::get('settings',          [SettingsController::class, 'index'])->name('settings');
     Route::post('settings',         [SettingsController::class, 'update'])->name('settings.update');
     Route::post('settings/password',[SettingsController::class, 'updatePassword'])->name('settings.password');
+
+    Route::get('plan', [PlanController::class, 'index'])->name('plan');
 });
 
 // --- Auth (guest only) ---

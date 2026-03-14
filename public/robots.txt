@@ -1,2 +1,108 @@
+# ─── Allow legitimate search engines full access ───────────────────────────
+User-agent: Googlebot
+Allow: /
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /dashboard/
+Disallow: /admin/
+
+User-agent: facebot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+# ─── Block scam review aggregators & bad scrapers ────────────────────────────
+# Trustpilot scraper
+User-agent: TrustpilotBot
+Disallow: /
+
+# SimilarWeb
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: MegaIndex.ru
+Disallow: /
+
+User-agent: SeznamBot
+Disallow: /
+
+User-agent: seoscanners.net
+Disallow: /
+
+User-agent: Yandex
+Disallow: /
+
+User-agent: Mail.RU_Bot
+Disallow: /
+
+User-agent: BabyBaumel
+Disallow: /
+
+User-agent: ltx71
+Disallow: /
+
+User-agent: python-requests
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+User-agent: scrapy
+Disallow: /
+
+User-agent: Go-http-client
+Disallow: /
+
+# ─── Default: block everything not listed above ──────────────────────────────
 User-agent: *
-Disallow:
+Disallow: /dashboard/
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+Allow: /
+
+# ─── Sitemap ─────────────────────────────────────────────────────────────────
+Sitemap: https://trustcrednet.com/sitemap.xml
