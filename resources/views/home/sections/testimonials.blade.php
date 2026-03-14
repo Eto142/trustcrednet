@@ -6,7 +6,7 @@
             </div>
             <h2 class="section-headline">Businesses Love TrustCredNet</h2>
             <p class="section-sub mx-auto" style="text-align:center;">
-                Thousands of businesses have grown their revenue and reputation — here's what they say.
+                Thousands of businesses have grown their revenue and reputation  here's what they say.
             </p>
         </div>
 

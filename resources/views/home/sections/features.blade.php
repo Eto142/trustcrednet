@@ -7,7 +7,7 @@
                 </div>
                 <h2 class="section-headline">Everything You Need to<br>Win Customer Trust</h2>
                 <p class="section-sub">
-                    From collecting reviews to showcasing them on your website — TrustCredNet covers every step of your reputation management workflow.
+                    From collecting reviews to showcasing them on your website  TrustCredNet covers every step of your reputation management workflow.
                 </p>
             </div>
             <div class="col-lg-5 text-lg-end fade-up d1">
@@ -94,7 +94,7 @@
                     <i class="bi bi-shield-exclamation" style="color:#EF4444;"></i>
                 </div>
                 <div class="feat-title">Fraud Protection</div>
-                <p class="feat-desc">AI-powered fake review detection keeps your profile clean and credible — automatically.</p>
+                <p class="feat-desc">AI-powered fake review detection keeps your profile clean and credible  automatically.</p>
                 <a href="#" class="feat-link" style="color:#EF4444;">Learn more <i class="bi bi-arrow-right"></i></a>
             </div>
         </div>
