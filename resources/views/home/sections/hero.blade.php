@@ -98,7 +98,7 @@ function heroRenderResult(results, q) {
     wrap.classList.add('active');
 
     if (results.length === 0) {
-        wrap.innerHTML = `<div class="hr-empty">No businesses found for "<strong>${_heroEsc(q)}</strong>". <a href="{{ route('register') }}">Add yours free →</a></div>`;
+        wrap.innerHTML = `<div class="hr-empty">No businesses found for "<strong>${_heroEsc(q)}</strong>". <a href="{{ route('contact') }}">Add yours free →</a></div>`;
         return;
     }
 

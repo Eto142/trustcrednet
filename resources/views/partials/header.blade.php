@@ -16,6 +16,7 @@
                 <li><a href="{{ route('features') }}" class="{{ request()->routeIs('features') ? 'nav-active' : '' }}">Features</a></li>
                 <li><a href="{{ route('pricing') }}"  class="{{ request()->routeIs('pricing')  ? 'nav-active' : '' }}">Pricing</a></li>
                 <li><a href="{{ route('about') }}"    class="{{ request()->routeIs('about')    ? 'nav-active' : '' }}">About</a></li>
+                <li><a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'nav-active' : '' }}">Contact</a></li>
             </ul>
 
             <!-- Desktop Auth CTAs -->
@@ -30,7 +31,7 @@
                     </form>
                 @else
                     <a href="{{ route('login') }}" class="nav-login">Login</a>
-                    <a href="{{ route('register') }}" class="nav-cta">
+                    <a href="{{ route('contact') }}" class="nav-cta">
                         <i class="bi bi-person-plus"></i> Sign Up
                     </a>
                 @endauth
@@ -55,6 +56,7 @@
         <a href="{{ route('features') }}" class="{{ request()->routeIs('features') ? 'nav-active' : '' }}"><i class="bi bi-grid me-2"></i>Features</a>
         <a href="{{ route('pricing') }}"  class="{{ request()->routeIs('pricing')  ? 'nav-active' : '' }}"><i class="bi bi-tag me-2"></i>Pricing</a>
         <a href="{{ route('about') }}"    class="{{ request()->routeIs('about')    ? 'nav-active' : '' }}"><i class="bi bi-info-circle me-2"></i>About</a>
+        <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'nav-active' : '' }}"><i class="bi bi-envelope me-2"></i>Contact</a>
         <div class="mobile-divider"></div>
         @auth
             <span class="mobile-user-row">
@@ -68,7 +70,7 @@
             </form>
         @else
             <a href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
-            <a href="{{ route('register') }}" class="mobile-cta"><i class="bi bi-person-plus me-1"></i>Sign Up Free</a>
+            <a href="{{ route('contact') }}" class="mobile-cta"><i class="bi bi-person-plus me-1"></i>Sign Up Free</a>
         @endauth
     </div>
 </nav>

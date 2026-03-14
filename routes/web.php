@@ -8,6 +8,7 @@ use App\Http\Controllers\Dashboard\SettingsController;
 use App\Http\Controllers\Dashboard\TestimonialController;
 use App\Http\Controllers\Dashboard\WebsiteController;
 use App\Http\Controllers\Dashboard\WidgetController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicProfileController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,8 @@ Route::get('/search',    [SearchController::class, 'search'])->name('search');
 Route::get('/features',  fn () => view('pages.features'))->name('features');
 Route::get('/pricing',   fn () => view('pages.pricing'))->name('pricing');
 Route::get('/about',     fn () => view('pages.about'))->name('about');
+Route::get('/contact',   [ContactController::class, 'create'])->name('contact');
+Route::post('/contact',  [ContactController::class, 'store'])->name('contact.store');
 
 
 

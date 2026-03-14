@@ -14,8 +14,8 @@
                     The trusted platform for collecting, managing, and showcasing authentic customer reviews. Build credibility that converts.
                 </p>
                 <div class="mt-3">
-                    <a href="mailto:hello@trustcrednet.com" class="footer-contact-chip">
-                        <i class="bi bi-envelope-fill"></i> hello@trustcrednet.com
+                    <a href="mailto:support@trustcrednet.com" class="footer-contact-chip">
+                        <i class="bi bi-envelope-fill"></i> support@trustcrednet.com
                     </a>
                     <a href="#" class="footer-contact-chip">
                         <i class="bi bi-headset"></i> 24/7 Support Portal
