@@ -1,6 +1,9 @@
 @extends('layouts.tcn')
 
-@section('title', 'Create Account – TrustCredNet')
+@section('title', 'Register Your Business – TrustCredNet')
+@section('description', 'Create your free TrustCredNet account. Start collecting verified customer reviews and build the trust that grows your business.')
+@section('og_title', 'Register Your Business – TrustCredNet')
+@section('og_description', 'Join thousands of businesses on TrustCredNet. Collect verified reviews, showcase your reputation, and convert more customers.')
 
 @section('content')
 <div class="auth-page">

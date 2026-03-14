@@ -3,8 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Collect, manage, and display your customer testimonials with TrustCredNet. Build trust and grow your business.">
-    <title>TrustCredNet &ndash; Build Trust. Showcase Your Reviews.</title>
+    <meta name="description" content="Discover verified businesses and authentic customer reviews. TrustCredNet helps you find companies you can trust — no fake ratings, no paid placements.">
+    <title>TrustCredNet – Build Trust. Showcase Your Reviews.</title>
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:site_name"   content="TrustCredNet">
+    <meta property="og:title"       content="TrustCredNet – Build Trust. Showcase Your Reviews.">
+    <meta property="og:description" content="Discover verified businesses and authentic customer reviews. No fake ratings, no paid placements — just real experiences from real people.">
+    <meta property="og:url"         content="{{ url('/') }}">
+    <meta property="og:image"       content="{{ url('/images/og-image.png') }}">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:site"        content="@trustcrednet">
+    <meta name="twitter:title"       content="TrustCredNet – Build Trust. Showcase Your Reviews.">
+    <meta name="twitter:description" content="Discover verified businesses and authentic customer reviews. No fake ratings, no paid placements — just real experiences from real people.">
+    <meta name="twitter:image"       content="{{ url('/images/og-image.png') }}">
 
     <!-- Bootstrap 5.3.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">

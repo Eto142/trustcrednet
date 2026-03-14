@@ -6,6 +6,21 @@
     <meta name="description" content="@yield('description', 'Collect, manage, and display customer reviews with TrustCredNet.')">
     <title>@yield('title', 'TrustCredNet – Build Trust. Showcase Your Reviews.')</title>
 
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website">
+    <meta property="og:site_name"   content="TrustCredNet">
+    <meta property="og:title"       content="@yield('og_title', 'TrustCredNet – Build Trust. Showcase Your Reviews.')">
+    <meta property="og:description" content="@yield('og_description', 'Collect, manage, and display customer reviews with TrustCredNet. Build credibility that converts.')">
+    <meta property="og:url"         content="{{ url()->current() }}">
+    <meta property="og:image"       content="@yield('og_image', url('/images/og-image.png'))">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:site"        content="@trustcrednet">
+    <meta name="twitter:title"       content="@yield('og_title', 'TrustCredNet – Build Trust. Showcase Your Reviews.')">
+    <meta name="twitter:description" content="@yield('og_description', 'Collect, manage, and display customer reviews with TrustCredNet. Build credibility that converts.')">
+    <meta name="twitter:image"       content="@yield('og_image', url('/images/og-image.png'))">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
