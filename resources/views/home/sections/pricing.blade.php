@@ -6,7 +6,7 @@
             </div>
             <h2 class="section-headline">Plans That Grow With You</h2>
             <p class="section-sub mx-auto" style="text-align:center;">
-                Start free and scale as your reputation grows. No hidden fees, no lock-in contracts.
+                Simple, affordable plans for every stage. No hidden fees, no lock-in contracts.
             </p>
             <div class="billing-toggle-wrap mt-3">
                 <button class="bill-btn active" id="btnMonthly" onclick="setBilling('monthly')">Monthly</button>
@@ -18,14 +18,14 @@
 
         <div class="pricing-grid">
 
-            {{-- Starter (free tier hidden)
+            {{-- Starter --}}
             <div class="price-card fade-up d1">
                 <div class="plan-name">Starter</div>
                 <div class="price-amount-wrap">
                     <span class="price-currency">$</span>
-                    <span class="price-num" id="priceStarter">0</span>
+                    <span class="price-num" id="priceStarter">9</span>
                 </div>
-                <div class="price-per">/ month &mdash; forever free</div>
+                <div class="price-per">/ month, billed as selected</div>
                 <p class="price-desc">Perfect for solo entrepreneurs and small businesses just getting started.</p>
                 <div class="price-divider"></div>
                 <ul class="price-features">
@@ -36,9 +36,8 @@
                     <li class="pf-item dimmed"><i class="bi bi-x-circle-fill"></i> Custom branding</li>
                     <li class="pf-item dimmed"><i class="bi bi-x-circle-fill"></i> Priority support</li>
                 </ul>
-                <a href="#" class="price-cta">Get Started Free</a>
+                <a href="{{ route('contact') }}" class="price-cta">Get Started</a>
             </div>
-            --}}
 
             {{-- Growth (popular) --}}
             <div class="price-card popular fade-up d2">
@@ -125,7 +124,7 @@
 
 <script>
 // Pricing toggle
-const _prices = { monthly: [0,49,149], yearly: [0,39,119] };
+const _prices = { monthly: [9,49,149], yearly: [7,39,119] };
 function setBilling(type) {
     ['btnMonthly','btnYearly'].forEach(id => document.getElementById(id).classList.remove('active'));
     document.getElementById(type === 'monthly' ? 'btnMonthly' : 'btnYearly').classList.add('active');
