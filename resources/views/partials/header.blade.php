@@ -21,20 +21,10 @@
 
             <!-- Desktop Auth CTAs -->
             <div class="d-flex align-items-center gap-2 desktop-nav">
-                @auth
-                    <span class="nav-user">
-                        <i class="bi bi-person-circle me-1"></i>{{ Auth::user()->name }}
-                    </span>
-                    <form method="POST" action="{{ route('logout') }}" class="m-0">
-                        @csrf
-                        <button type="submit" class="nav-logout-btn">Logout</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="nav-login">Login</a>
-                    <a href="{{ route('contact') }}" class="nav-cta">
-                        <i class="bi bi-person-plus"></i> Sign Up
-                    </a>
-                @endauth
+                <a href="{{ route('login') }}" class="nav-login">Login</a>
+                <a href="{{ route('contact') }}" class="nav-cta">
+                    <i class="bi bi-person-plus"></i> Sign Up
+                </a>
             </div>
 
             <!-- Hamburger -->
@@ -58,19 +48,7 @@
         <a href="{{ route('about') }}"    class="{{ request()->routeIs('about')    ? 'nav-active' : '' }}"><i class="bi bi-info-circle me-2"></i>About</a>
         <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'nav-active' : '' }}"><i class="bi bi-envelope me-2"></i>Contact</a>
         <div class="mobile-divider"></div>
-        @auth
-            <span class="mobile-user-row">
-                <i class="bi bi-person-circle"></i> {{ Auth::user()->name }}
-            </span>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit" class="mobile-logout-btn">
-                    <i class="bi bi-box-arrow-right me-2"></i>Logout
-                </button>
-            </form>
-        @else
-            <a href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
-            <a href="{{ route('contact') }}" class="mobile-cta"><i class="bi bi-person-plus me-1"></i>Sign Up Free</a>
-        @endauth
+        <a href="{{ route('login') }}"><i class="bi bi-box-arrow-in-right me-2"></i>Login</a>
+        <a href="{{ route('contact') }}" class="mobile-cta"><i class="bi bi-person-plus me-1"></i>Sign Up Free</a>
     </div>
 </nav>
