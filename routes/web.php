@@ -71,3 +71,7 @@ Route::post('/logout', [LoginController::class, 'destroy'])->name('logout')->mid
 Route::get('/{slug}', [PublicProfileController::class, 'show'])
     ->name('public.profile')
     ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
+
+Route::post('/{slug}/review', [PublicProfileController::class, 'storeReview'])
+    ->name('public.profile.review')
+    ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');

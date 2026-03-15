@@ -157,6 +157,187 @@
 <script type="application/ld+json">{!! json_encode($jsonLdPage,       JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 <script type="application/ld+json">{!! json_encode($jsonLdBreadcrumb, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 <script type="application/ld+json">{!! json_encode($jsonLdFaq,        JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+
+<style>
+/* ── Review submitted banner ── */
+.prof-review-submitted {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #ECFDF5;
+    border: 1.5px solid #6EE7B7;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: .9rem;
+    color: #065F46;
+    line-height: 1.5;
+}
+.prof-review-submitted i {
+    font-size: 1.3rem;
+    color: #059669;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* ── Write-a-review box ── */
+.prof-write-review {
+    background: var(--tcn-light, #F9FAFB);
+    border: 1.5px solid var(--tcn-border, #E5E7EB);
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 28px;
+}
+.prof-wr-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--tcn-border, #E5E7EB);
+}
+.prof-wr-header > i {
+    font-size: 1.4rem;
+    color: var(--tcn-green, #059669);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.prof-wr-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--tcn-heading, #111827);
+    margin: 0 0 3px;
+}
+.prof-wr-sub {
+    font-size: .82rem;
+    color: var(--tcn-gray, #6B7280);
+    margin: 0;
+}
+.prof-wr-errors {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    background: #FEF2F2;
+    border: 1.5px solid #FECACA;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    font-size: .82rem;
+    color: #991B1B;
+}
+.prof-wr-errors i { flex-shrink: 0; margin-top: 2px; }
+.prof-wr-errors ul { margin: 0; padding-left: 18px; }
+
+/* Star picker */
+.prof-star-picker {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+.prof-star-btn {
+    font-size: 1.6rem;
+    color: #D1D5DB;
+    cursor: pointer;
+    transition: color .12s, transform .1s;
+}
+.prof-star-btn.active,
+.prof-star-btn.hovered {
+    color: #F59E0B;
+}
+.prof-star-btn:hover {
+    transform: scale(1.15);
+}
+.prof-star-hint {
+    font-size: .8rem;
+    color: var(--tcn-gray, #9CA3AF);
+    margin-left: 6px;
+}
+
+/* Fields */
+.prof-wr-field {
+    margin-bottom: 0;
+}
+.prof-wr-label {
+    display: block;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--tcn-heading, #374151);
+    margin-bottom: 6px;
+}
+.prof-wr-req { color: #EF4444; }
+.prof-wr-opt { font-weight: 400; color: #9CA3AF; }
+.prof-wr-input {
+    width: 100%;
+    background: #fff;
+    border: 1.5px solid var(--tcn-border, #E5E7EB);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: .88rem;
+    color: var(--tcn-heading, #111827);
+    outline: none;
+    transition: border-color .15s;
+    font-family: inherit;
+}
+.prof-wr-input:focus {
+    border-color: var(--tcn-green, #059669);
+    box-shadow: 0 0 0 3px rgba(5,150,105,.1);
+}
+.prof-wr-input.is-invalid {
+    border-color: #EF4444;
+}
+.prof-wr-textarea { resize: vertical; min-height: 110px; }
+.prof-wr-charcount {
+    text-align: right;
+    font-size: .75rem;
+    color: #9CA3AF;
+    margin-top: 4px;
+}
+.prof-wr-error-msg {
+    display: block;
+    font-size: .78rem;
+    color: #EF4444;
+    margin-top: 4px;
+}
+
+/* Footer bar */
+.prof-wr-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--tcn-border, #E5E7EB);
+}
+.prof-wr-note {
+    font-size: .78rem;
+    color: #9CA3AF;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+.prof-wr-submit {
+    background: linear-gradient(135deg, #059669, #10B981);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 11px 26px;
+    font-size: .9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity .15s;
+    white-space: nowrap;
+}
+.prof-wr-submit:hover { opacity: .88; }
+</style>
 @endsection
 
 @section('content')
@@ -304,6 +485,17 @@
             {{-- ─── RIGHT: REVIEWS ─── --}}
             <div class="col-lg-8">
 
+                {{-- ── Success notice ── --}}
+                @if(session('review_submitted'))
+                <div class="prof-review-submitted">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <div>
+                        <strong>Thank you for your review!</strong><br>
+                        <span>It will appear here once it's been approved by the business.</span>
+                    </div>
+                </div>
+                @endif
+
                 <div class="prof-reviews-header">
                     <h2 class="prof-reviews-title">
                         <i class="bi bi-chat-quote-fill" style="color:var(--tcn-green);"></i>
@@ -375,6 +567,110 @@
                     </div>
                 @endif
 
+                {{-- ════════════════════════════════
+                     WRITE A REVIEW
+                ════════════════════════════════ --}}
+                <div class="prof-write-review" id="write-review">
+                    <div class="prof-wr-header">
+                        <i class="bi bi-pencil-square"></i>
+                        <div>
+                            <h3 class="prof-wr-title">Write a Review</h3>
+                            <p class="prof-wr-sub">Share your experience with {{ $website->name }}</p>
+                        </div>
+                    </div>
+
+                    @if($errors->any())
+                    <div class="prof-wr-errors">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <ul>
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('public.profile.review', $website->slug) }}">
+                        @csrf
+
+                        {{-- Star rating picker --}}
+                        <div class="prof-wr-field">
+                            <label class="prof-wr-label">Your Rating <span class="prof-wr-req">*</span></label>
+                            <div class="prof-star-picker" id="starPicker">
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="bi bi-star prof-star-btn" data-val="{{ $i }}"></i>
+                                @endfor
+                                <span class="prof-star-hint" id="starHint">Click to rate</span>
+                            </div>
+                            <input type="hidden" name="rating" id="ratingInput" value="{{ old('rating') }}">
+                            @error('rating')
+                                <span class="prof-wr-error-msg">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="prof-wr-field">
+                                    <label class="prof-wr-label" for="wr_name">Full Name <span class="prof-wr-req">*</span></label>
+                                    <input type="text" id="wr_name" name="author_name"
+                                           class="prof-wr-input @error('author_name') is-invalid @enderror"
+                                           value="{{ old('author_name') }}"
+                                           placeholder="e.g. John Adeyemi" maxlength="100">
+                                    @error('author_name')
+                                        <span class="prof-wr-error-msg">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="prof-wr-field">
+                                    <label class="prof-wr-label" for="wr_email">Email <span class="prof-wr-opt">(optional)</span></label>
+                                    <input type="email" id="wr_email" name="author_email"
+                                           class="prof-wr-input @error('author_email') is-invalid @enderror"
+                                           value="{{ old('author_email') }}"
+                                           placeholder="Not shown publicly" maxlength="150">
+                                    @error('author_email')
+                                        <span class="prof-wr-error-msg">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="prof-wr-field">
+                                    <label class="prof-wr-label" for="wr_role">Your Role / Title <span class="prof-wr-opt">(optional)</span></label>
+                                    <input type="text" id="wr_role" name="author_role"
+                                           class="prof-wr-input"
+                                           value="{{ old('author_role') }}"
+                                           placeholder="e.g. CEO, Customer, Freelancer" maxlength="100">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="prof-wr-field">
+                                    <label class="prof-wr-label" for="wr_content">Your Review <span class="prof-wr-req">*</span></label>
+                                    <textarea id="wr_content" name="content" rows="5"
+                                              class="prof-wr-input prof-wr-textarea @error('content') is-invalid @enderror"
+                                              placeholder="Tell others about your experience — what went well, what could be better…"
+                                              maxlength="2000">{{ old('content') }}</textarea>
+                                    <div class="prof-wr-charcount">
+                                        <span id="wr-char-count">0</span> / 2000
+                                    </div>
+                                    @error('content')
+                                        <span class="prof-wr-error-msg">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="prof-wr-footer">
+                            <p class="prof-wr-note">
+                                <i class="bi bi-shield-check"></i>
+                                Reviews are moderated before publishing. Your email (if provided) will never be shown publicly.
+                            </p>
+                            <button type="submit" class="prof-wr-submit">
+                                <i class="bi bi-send-fill"></i> Submit Review
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
@@ -414,4 +710,55 @@
     </div>
 </section>
 
+@endsection
+
+@section('scripts')
+<script>
+(function () {
+    // ── Star picker ──
+    const stars   = document.querySelectorAll('.prof-star-btn');
+    const input   = document.getElementById('ratingInput');
+    const hint    = document.getElementById('starHint');
+    const labels  = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+    let current   = parseInt(input ? input.value : 0) || 0;
+
+    function paintStars(val) {
+        stars.forEach(s => {
+            const v = parseInt(s.dataset.val);
+            s.classList.remove('bi-star-fill', 'bi-star');
+            s.classList.add(v <= val ? 'bi-star-fill' : 'bi-star');
+        });
+    }
+
+    if (current) { paintStars(current); if (hint) hint.textContent = labels[current]; }
+
+    stars.forEach(star => {
+        const val = parseInt(star.dataset.val);
+        star.addEventListener('mouseenter', () => {
+            paintStars(val);
+            if (hint) hint.textContent = labels[val];
+        });
+        star.addEventListener('mouseleave', () => {
+            paintStars(current);
+            if (hint) hint.textContent = current ? labels[current] : 'Click to rate';
+        });
+        star.addEventListener('click', () => {
+            current = val;
+            if (input) input.value = val;
+            paintStars(current);
+            if (hint) hint.textContent = labels[current];
+        });
+    });
+
+    // ── Char counter ──
+    const textarea  = document.getElementById('wr_content');
+    const charCount = document.getElementById('wr-char-count');
+    if (textarea && charCount) {
+        charCount.textContent = textarea.value.length;
+        textarea.addEventListener('input', () => {
+            charCount.textContent = textarea.value.length;
+        });
+    }
+})();
+</script>
 @endsection
