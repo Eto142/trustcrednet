@@ -15,7 +15,7 @@
             ? $website->name . ' has a ' . $ratingStr . ' star rating from ' . $total . ' verified ' . $reviewWord . '. Read real customer testimonials for ' . $website->name . ($hostName ? ' (' . $hostName . ')' : '') . ' on TrustCredNet.'
             : 'Read ' . $total . ' verified customer ' . $reviewWord . ' for ' . $website->name . ($hostName ? ' (' . $hostName . ')' : '') . ' on TrustCredNet. See ratings, testimonials and more.');
 
-    $canonicalUrl = url('/' . $website->slug);
+    $canonicalUrl = url('/reviews/' . $website->slug);
     $ogImage      = $website->user->logo_path ?: asset('images/og-default.png');
 
     $keywords = collect([
@@ -127,7 +127,7 @@
         '@type'           => 'BreadcrumbList',
         'itemListElement' => [
             ['@type' => 'ListItem', 'position' => 1, 'name' => 'Home',    'item' => url('/')],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Reviews', 'item' => url('/search')],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Reviews', 'item' => url('/reviews')],         
             ['@type' => 'ListItem', 'position' => 3, 'name' => $website->name . ' Reviews', 'item' => $canonicalUrl],
         ],
     ];

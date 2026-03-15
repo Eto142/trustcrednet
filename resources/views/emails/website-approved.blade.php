@@ -225,7 +225,7 @@
     <div class="detail-row">
       <span class="detail-key">Your TrustCredNet Profile</span>
       <span class="detail-val">
-        <a href="{{ url('/' . $website->slug) }}">trustcrednet.com/{{ $website->slug }}</a>
+        <a href="{{ url('/reviews/' . $website->slug) }}">trustcrednet.com/reviews/{{ $website->slug }}</a>
       </span>
     </div>
 
@@ -237,7 +237,7 @@
 
   {{-- ─ CTA ─ --}}
   <div class="cta-section">
-    <a href="{{ url('/' . $website->slug) }}" class="cta-btn">View Your Live Profile &rarr;</a>
+    <a href="{{ url('/reviews/' . $website->slug) }}" class="cta-btn">View Your Live Profile &rarr;</a>
   </div>
 
   <div class="divider"></div>
@@ -251,7 +251,7 @@
       <div class="step-body">
         <p class="step-title">Share your profile link</p>
         <p class="step-desc">
-          Send <strong>trustcrednet.com/{{ $website->slug }}</strong> to your customers
+          Send <strong>trustcrednet.com/reviews/{{ $website->slug }}</strong> to your customers
           so they can find and leave reviews for your business.
         </p>
       </div>

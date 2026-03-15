@@ -49,7 +49,7 @@
     {{-- Active business profile pages --}}
     @foreach($profiles as $profile)
     <url>
-        <loc>{{ url('/' . $profile->slug) }}</loc>
+        <loc>{{ url('/reviews/' . $profile->slug) }}</loc>
         <lastmod>{{ $profile->updated_at->toAtomString() }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>

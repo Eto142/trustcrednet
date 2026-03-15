@@ -28,7 +28,7 @@ class Website extends Model
     /** Full public URL for this business profile. */
     public function getPublicUrlAttribute(): string
     {
-        return url('/' . $this->slug);
+        return url('/reviews/' . $this->slug);
     }
 
     public function user(): BelongsTo

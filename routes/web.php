@@ -67,11 +67,11 @@ Route::middleware('guest')->group(function () {
 // --- Logout (auth only) ---
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout')->middleware('auth');
 
-// --- Public business profiles (must remain last — catch-all) ---
-Route::get('/{slug}', [PublicProfileController::class, 'show'])
+// --- Public business profiles ---
+Route::get('/reviews/{slug}', [PublicProfileController::class, 'show'])
     ->name('public.profile')
     ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
 
-Route::post('/{slug}/review', [PublicProfileController::class, 'storeReview'])
+Route::post('/write-review/{slug}', [PublicProfileController::class, 'storeReview'])
     ->name('public.profile.review')
     ->where('slug', '[a-z0-9]+(?:-[a-z0-9]+)*');
