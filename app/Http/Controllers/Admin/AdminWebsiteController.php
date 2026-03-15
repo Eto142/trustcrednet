@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\WebsiteApproved;
 use App\Models\Website;
+use Illuminate\Support\Facades\Mail;
 
 class AdminWebsiteController extends Controller
 {
@@ -16,7 +18,10 @@ class AdminWebsiteController extends Controller
     public function approve(Website $website)
     {
         $website->update(['is_active' => true]);
-        return back()->with('message', 'Website "' . $website->name . '" has been approved.');
+
+        Mail::to($website->user->email)->send(new WebsiteApproved($website));
+
+        return back()->with('message', 'Website "' . $website->name . '" has been approved and the user has been notified.');
     }
 
     public function reject(Website $website)
