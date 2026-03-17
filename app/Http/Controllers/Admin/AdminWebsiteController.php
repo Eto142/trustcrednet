@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\WebsiteApproved;
 use App\Models\Website;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AdminWebsiteController extends Controller
@@ -21,6 +23,8 @@ class AdminWebsiteController extends Controller
 
         Mail::to($website->user->email)->send(new WebsiteApproved($website));
 
+        $this->pingSitemapToGoogle();
+
         return back()->with('message', 'Website "' . $website->name . '" has been approved and the user has been notified.');
     }
 
@@ -28,5 +32,18 @@ class AdminWebsiteController extends Controller
     {
         $website->update(['is_active' => false]);
         return back()->with('message', 'Website "' . $website->name . '" has been rejected.');
+    }
+
+    private function pingSitemapToGoogle(): void
+    {
+        $sitemapUrl = url('/sitemap.xml');
+
+        try {
+            Http::timeout(5)->get('https://www.google.com/ping', [
+                'sitemap' => $sitemapUrl,
+            ]);
+        } catch (\Throwable $e) {
+            Log::warning('Google sitemap ping failed: ' . $e->getMessage());
+        }
     }
 }
