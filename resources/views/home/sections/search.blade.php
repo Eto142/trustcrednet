@@ -63,7 +63,7 @@
                     $colors   = ['#2563EB','#10B981','#7C3AED','#0891B2','#F59E0B','#EF4444','#0F172A','#059669'];
                     $color    = $colors[$loop->index % count($colors)];
                 @endphp
-                <a href="{{ url('/' . $biz->slug) }}" class="featured-card">
+                <a href="{{ url('/reviews/' . $biz->slug) }}" class="featured-card">
                     @if($biz->user?->logo_path)
                         <img src="{{ $biz->user->logo_path }}" class="featured-avatar featured-avatar-img" alt="{{ $biz->name }}">
                     @else

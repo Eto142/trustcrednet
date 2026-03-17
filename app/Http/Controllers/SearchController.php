@@ -32,7 +32,7 @@ class SearchController extends Controller
             ->map(fn ($w) => [
                 'name'   => $w->name,
                 'slug'   => $w->slug,
-                'url'    => url('/' . $w->slug),
+                'url'    => url('/reviews/' . $w->slug),
                 'logo'   => $w->user?->logo_path,
                 'rating' => $w->approved_testimonials_avg_rating
                     ? round($w->approved_testimonials_avg_rating, 1)
