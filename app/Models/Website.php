@@ -9,9 +9,21 @@ use Illuminate\Support\Str;
 
 class Website extends Model
 {
-    protected $fillable = ['user_id', 'name', 'slug', 'url', 'description', 'is_active'];
+    protected $fillable = ['user_id', 'name', 'slug', 'url', 'description', 'is_active', 'activated_at', 'activation_expires_at'];
 
-    protected $casts = ['is_active' => 'boolean'];
+    protected $casts = [
+        'is_active'             => 'boolean',
+        'activated_at'          => 'datetime',
+        'activation_expires_at' => 'datetime',
+    ];
+
+    /** Returns true when the activation period has passed. */
+    public function isExpired(): bool
+    {
+        return $this->is_active
+            && $this->activation_expires_at !== null
+            && $this->activation_expires_at->isPast();
+    }
 
     /** Generate a slug from $name that is unique across the websites table. */
     public static function generateUniqueSlug(string $name, int $excludeId = 0): string

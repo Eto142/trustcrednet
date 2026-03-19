@@ -34,6 +34,7 @@
                         <th>Status</th>
                         <th>Testimonials</th>
                         <th>Added</th>
+                        <th>Expiry</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -53,7 +54,9 @@
                             </a>
                         </td>
                         <td>
-                            @if($website->is_active)
+                            @if($website->isExpired())
+                                <span class="dash-badge" style="background:rgba(220,38,38,.1);color:#dc2626;font-size:.75rem;"><i class="bi bi-exclamation-triangle-fill"></i> Expired – Needs Renewal</span>
+                            @elseif($website->is_active)
                                 <span class="dash-badge dash-badge-green"><i class="bi bi-check-circle-fill"></i> Active</span>
                             @else
                                 <span class="dash-badge" style="background: rgba(245,158,11,0.12); color: #B45309; font-size:.75rem;"><i class="bi bi-exclamation-circle-fill"></i> Inactive – Awaiting Payment</span>
@@ -68,14 +71,27 @@
                         </td>
                         <td style="color:var(--tcn-gray);font-size:.8rem;">{{ $website->created_at->format('M j, Y') }}</td>
                         <td>
+                            @if($website->activation_expires_at)
+                                @if($website->isExpired())
+                                    <span style="color:#dc2626;font-size:.78rem;font-weight:600;"><i class="bi bi-exclamation-triangle-fill"></i> Expired {{ $website->activation_expires_at->format('M j, Y') }}</span>
+                                @else
+                                    <span style="font-size:.78rem;color:var(--tcn-gray);">Expires {{ $website->activation_expires_at->format('M j, Y') }}</span>
+                                @endif
+                            @else
+                                <span style="font-size:.78rem;color:var(--tcn-gray);">—</span>
+                            @endif
+                        </td>
+                        <td>
                             <div class="d-flex gap-2">
-                                @if(!$website->is_active)
+                                @if(!$website->is_active || $website->isExpired())
                                 <button type="button" onclick="document.getElementById('activationOverlay').style.display='flex';" class="dash-btn dash-btn-primary dash-btn-sm">
-                                    <i class="bi bi-lightning-charge-fill"></i> Activate
+                                    <i class="bi bi-lightning-charge-fill"></i> {{ $website->isExpired() ? 'Renew' : 'Activate' }}
                                 </button>
+                                @if(!$website->is_active)
                                 <button type="button" onclick="openPreview('{{ $website->name }}','{{ addslashes(Str::limit($website->description, 120)) }}','{{ parse_url($website->url, PHP_URL_HOST) ?: $website->url }}','{{ $website->url }}','{{ strtoupper(mb_substr($website->name, 0, 2)) }}')" class="dash-btn dash-btn-outline dash-btn-sm" title="Preview how your page will look">
                                     <i class="bi bi-display"></i> Preview
                                 </button>
+                                @endif
                                 @endif
                                 @if($website->slug)
                                 <a href="{{ $website->public_url }}" target="_blank" rel="noopener"
@@ -119,7 +135,9 @@
 
                 {{-- Status badge --}}
                 <div style="margin-bottom:12px;">
-                    @if($website->is_active)
+                    @if($website->isExpired())
+                        <span class="site-status" style="background:rgba(220,38,38,.1);color:#dc2626;"><span class="site-status-dot" style="background:#dc2626;"></span> Expired – Needs Renewal</span>
+                    @elseif($website->is_active)
                         <span class="site-status site-status-active"><span class="site-status-dot"></span> Active</span>
                     @else
                         <span class="site-status site-status-pending"><span class="site-status-dot"></span> Inactive – Awaiting Payment</span>
@@ -138,17 +156,27 @@
                     </a>
                     <span class="site-m-meta-divider"></span>
                     <span class="site-m-date"><i class="bi bi-calendar3"></i> {{ $website->created_at->format('M j, Y') }}</span>
+                    @if($website->activation_expires_at)
+                    <span class="site-m-meta-divider"></span>
+                    @if($website->isExpired())
+                        <span style="font-size:.72rem;color:#dc2626;font-weight:600;"><i class="bi bi-exclamation-triangle-fill"></i> Expired {{ $website->activation_expires_at->format('M j, Y') }}</span>
+                    @else
+                        <span style="font-size:.72rem;color:var(--tcn-gray);"><i class="bi bi-clock"></i> Expires {{ $website->activation_expires_at->format('M j, Y') }}</span>
+                    @endif
+                    @endif
                 </div>
 
                 {{-- Actions --}}
                 <div class="site-m-actions">
-                    @if(!$website->is_active)
+                    @if(!$website->is_active || $website->isExpired())
                     <button type="button" onclick="document.getElementById('activationOverlay').style.display='flex';" class="site-m-btn" style="background:var(--tcn-green);color:#fff;box-shadow:0 2px 8px rgba(0,182,122,.28);flex:1;">
-                        <i class="bi bi-lightning-charge-fill"></i> Activate
+                        <i class="bi bi-lightning-charge-fill"></i> {{ $website->isExpired() ? 'Renew' : 'Activate' }}
                     </button>
+                    @if(!$website->is_active)
                     <button type="button" onclick="openPreview('{{ $website->name }}','{{ addslashes(Str::limit($website->description, 120)) }}','{{ parse_url($website->url, PHP_URL_HOST) ?: $website->url }}','{{ $website->url }}','{{ strtoupper(mb_substr($website->name, 0, 2)) }}')" class="site-m-btn site-m-btn-outline">
                         <i class="bi bi-display"></i> Preview
                     </button>
+                    @endif
                     @endif
                     @if($website->slug)
                     <a href="{{ $website->public_url }}" target="_blank" rel="noopener" class="site-m-btn site-m-btn-outline">
@@ -176,7 +204,7 @@
 </div>
 
 {{-- ===== ACTIVATION MODAL ===== --}}
-@if(session('show_activation') || $websites->contains(fn($w) => !$w->is_active))
+@if(session('show_activation') || $websites->contains(fn($w) => !$w->is_active || $w->isExpired()))
 <div class="tcn-overlay" id="activationOverlay" onclick="if(event.target===this)this.style.display='none';" @if(session('show_activation')) style="display:flex;" @else style="display:none;" @endif>
     <div class="tcn-modal">
         <button class="tcn-close" onclick="document.getElementById('activationOverlay').style.display='none';">&times;</button>

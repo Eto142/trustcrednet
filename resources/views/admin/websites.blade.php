@@ -39,6 +39,7 @@
                         <th>Testimonials</th>
                         <th>Status</th>
                         <th>Created</th>
+                        <th>Expires</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -54,7 +55,9 @@
                         <td>{{ $website->user->name ?? '—' }}</td>
                         <td>{{ $website->testimonials_count }}</td>
                         <td>
-                            @if($website->is_active)
+                            @if($website->isExpired())
+                                <span class="status-badge inactive">Expired</span>
+                            @elseif($website->is_active)
                                 <span class="status-badge active">Active</span>
                             @else
                                 <span class="status-badge inactive">Inactive</span>
@@ -63,6 +66,19 @@
                         <td>
                             <div>{{ $website->created_at->format('M j, Y') }}</div>
                             <small style="color: var(--admin-text-muted);">{{ $website->created_at->diffForHumans() }}</small>
+                        </td>
+                        <td>
+                            @if($website->activation_expires_at)
+                                @if($website->isExpired())
+                                    <span style="color:#dc2626;font-weight:600;font-size:13px;"><i class="bi bi-exclamation-triangle-fill"></i> Expired</span>
+                                    <div style="font-size:12px;color:var(--admin-text-muted);">{{ $website->activation_expires_at->format('M j, Y') }}</div>
+                                @else
+                                    <div style="font-size:13px;font-weight:600;">{{ $website->activation_expires_at->format('M j, Y') }}</div>
+                                    <small style="color:var(--admin-text-muted);">{{ $website->activation_expires_at->diffForHumans() }}</small>
+                                @endif
+                            @else
+                                <span style="color:var(--admin-text-muted);font-size:13px;">—</span>
+                            @endif
                         </td>
                         <td>
                             <div class="action-buttons" style="display: flex; gap: 6px;">
@@ -86,7 +102,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6">
+                        <td colspan="7">
                             <div class="empty-state">
                                 <div class="empty-state-icon"><i class="bi bi-globe2"></i></div>
                                 <div class="empty-state-title">No websites found</div>

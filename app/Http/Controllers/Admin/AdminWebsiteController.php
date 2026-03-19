@@ -19,7 +19,11 @@ class AdminWebsiteController extends Controller
 
     public function approve(Website $website)
     {
-        $website->update(['is_active' => true]);
+        $website->update([
+            'is_active'             => true,
+            'activated_at'          => now(),
+            'activation_expires_at' => now()->addYear(),
+        ]);
 
         Mail::to($website->user->email)->send(new WebsiteApproved($website));
 
@@ -30,7 +34,11 @@ class AdminWebsiteController extends Controller
 
     public function reject(Website $website)
     {
-        $website->update(['is_active' => false]);
+        $website->update([
+            'is_active'             => false,
+            'activated_at'          => null,
+            'activation_expires_at' => null,
+        ]);
         return back()->with('message', 'Website "' . $website->name . '" has been rejected.');
     }
 
