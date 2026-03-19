@@ -115,6 +115,9 @@
                                 <th>URL</th>
                                 <th>Testimonials</th>
                                 <th>Status</th>
+                                <th>Added</th>
+                                <th>Activated</th>
+                                <th>Expires</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -125,10 +128,37 @@
                                 <td><a href="{{ $website->url }}" target="_blank" style="color: var(--admin-primary-light);">{{ $website->url }}</a></td>
                                 <td>{{ $website->testimonials->count() }}</td>
                                 <td>
-                                    @if($website->is_active)
+                                    @if($website->isExpired())
+                                        <span class="status-badge inactive">Expired</span>
+                                    @elseif($website->is_active)
                                         <span class="status-badge active">Active</span>
                                     @else
                                         <span class="status-badge inactive">Inactive</span>
+                                    @endif
+                                </td>
+                                <td style="font-size:13px;">
+                                    <div>{{ $website->created_at->format('M j, Y') }}</div>
+                                    <small style="color:var(--admin-text-muted);">{{ $website->created_at->diffForHumans() }}</small>
+                                </td>
+                                <td style="font-size:13px;">
+                                    @if($website->activated_at)
+                                        <div>{{ $website->activated_at->format('M j, Y') }}</div>
+                                        <small style="color:var(--admin-text-muted);">{{ $website->activated_at->diffForHumans() }}</small>
+                                    @else
+                                        <span style="color:var(--admin-text-muted);">—</span>
+                                    @endif
+                                </td>
+                                <td style="font-size:13px;">
+                                    @if($website->activation_expires_at)
+                                        @if($website->isExpired())
+                                            <div style="color:#dc2626;font-weight:600;"><i class="bi bi-exclamation-triangle-fill"></i> Expired</div>
+                                            <small style="color:#dc2626;">{{ $website->activation_expires_at->format('M j, Y') }}</small>
+                                        @else
+                                            <div>{{ $website->activation_expires_at->format('M j, Y') }}</div>
+                                            <small style="color:var(--admin-text-muted);">{{ $website->activation_expires_at->diffForHumans() }}</small>
+                                        @endif
+                                    @else
+                                        <span style="color:var(--admin-text-muted);">—</span>
                                     @endif
                                 </td>
                                 <td>
@@ -153,7 +183,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5">
+                                <td colspan="8">
                                     <div class="empty-state">
                                         <div class="empty-state-icon"><i class="bi bi-globe2"></i></div>
                                         <div class="empty-state-title">No websites</div>
