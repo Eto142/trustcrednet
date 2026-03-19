@@ -123,6 +123,19 @@
             </div>
         </div>
 
+        {{-- Impersonation banner --}}
+        @if(session('impersonating_admin_id'))
+        <div style="background:#7c3aed;color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.875rem;font-weight:500;flex-wrap:wrap;">
+            <span><i class="bi bi-person-fill-gear me-2"></i>You are viewing the dashboard as <strong>{{ Auth::user()->name }}</strong> ({{ Auth::user()->email }})</span>
+            <form method="POST" action="{{ route('impersonate.stop') }}">
+                @csrf
+                <button type="submit" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:5px 14px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;white-space:nowrap;">
+                    <i class="bi bi-box-arrow-left me-1"></i> Return to Admin Panel
+                </button>
+            </form>
+        </div>
+        @endif
+
         {{-- Content + flash alerts --}}
         <div class="dash-content">
 

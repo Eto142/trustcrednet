@@ -15,6 +15,13 @@
         <p class="page-subtitle">User profile details</p>
     </div>
     <div class="page-header-actions" style="display: flex; gap: 8px;">
+        <form action="{{ route('admin.users.impersonate', $user) }}" method="POST" style="display:inline;">
+            @csrf
+            <button type="submit" class="btn-admin btn-admin-primary" onclick="return confirm('Access this account as {{ addslashes($user->name) }}?')">
+                <i class="bi bi-person-fill-gear"></i>
+                Access Account
+            </button>
+        </form>
         <a href="{{ route('admin.users.edit', $user) }}" class="btn-admin btn-admin-primary">
             <i class="bi bi-pencil"></i>
             Edit User

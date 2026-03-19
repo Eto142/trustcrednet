@@ -22,6 +22,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
             Route::get('/users/{user}/email', [AdminUserController::class, 'emailForm'])->name('users.email');
             Route::post('/users/{user}/email', [AdminUserController::class, 'sendEmail'])->name('users.email.send');
+            Route::post('/users/{user}/impersonate', [AdminUserController::class, 'impersonate'])->name('users.impersonate');
 
         Route::get('/websites',                    [AdminWebsiteController::class, 'index'])->name('websites');
         Route::post('/websites/{website}/approve', [AdminWebsiteController::class, 'approve'])->name('websites.approve');

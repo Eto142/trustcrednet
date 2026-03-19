@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Dashboard\AnalyticsController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\PlanController;
@@ -66,6 +67,9 @@ Route::middleware('guest')->group(function () {
 
 // --- Logout (auth only) ---
 Route::post('/logout', [LoginController::class, 'destroy'])->name('logout')->middleware('auth');
+
+// --- Stop impersonating ---
+Route::post('/impersonate/stop', [AdminUserController::class, 'stopImpersonating'])->name('impersonate.stop')->middleware('auth');
 
 // --- Public business profiles ---
 Route::get('/reviews/{slug}', [PublicProfileController::class, 'show'])

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class AdminUserController extends Controller
@@ -61,5 +62,37 @@ class AdminUserController extends Controller
         });
 
         return redirect()->route('admin.users')->with('message', 'Email sent to ' . $user->email . '.');
+    }
+
+    public function impersonate(User $user)
+    {
+        // Store admin identity so we can restore it later
+        session([
+            'impersonating_admin_id' => Auth::guard('admin')->id(),
+            'impersonated_user_id'   => $user->id,
+        ]);
+
+        Auth::guard('admin')->logout();
+        Auth::login($user);
+
+        return redirect()->route('dashboard.index');
+    }
+
+    public function stopImpersonating()
+    {
+        $adminId = session('impersonating_admin_id');
+        $userId  = session('impersonated_user_id');
+
+        if (!$adminId) {
+            return redirect()->route('home');
+        }
+
+        Auth::logout();
+        Auth::guard('admin')->loginUsingId($adminId);
+
+        session()->forget(['impersonating_admin_id', 'impersonated_user_id']);
+
+        return redirect()->route('admin.users.show', $userId)
+            ->with('message', 'Impersonation ended. You are back as admin.');
     }
 }
