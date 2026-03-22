@@ -1712,6 +1712,7 @@ body.is-inner-page #mainNav {
 .site-m-actions {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
     padding-top: 14px;
     border-top: 1px solid var(--tcn-border);
