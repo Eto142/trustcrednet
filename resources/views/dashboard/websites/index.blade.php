@@ -169,7 +169,7 @@
                 {{-- Actions --}}
                 <div class="site-m-actions">
                     @if(!$website->is_active || $website->isExpired())
-                    <button type="button" onclick="document.getElementById('activationOverlay').style.display='flex';" class="site-m-btn" style="background:var(--tcn-green);color:#fff;box-shadow:0 2px 8px rgba(0,182,122,.28);flex:1;">
+                    <button type="button" onclick="document.getElementById('activationOverlay').style.display='flex';" class="site-m-btn site-m-btn-activate" style="background:var(--tcn-green);color:#fff;box-shadow:0 2px 8px rgba(0,182,122,.28);">
                         <i class="bi bi-lightning-charge-fill"></i> {{ $website->isExpired() ? 'Renew' : 'Activate' }}
                     </button>
                     @if(!$website->is_active)
@@ -451,7 +451,8 @@
 @media(max-width:480px){.tcn-modal{border-radius:14px;max-width:100%}.tcn-head{padding:20px 18px 14px}.tcn-section{padding:14px 18px 0}.tcn-note{margin:14px 18px 0}.tcn-tabs{flex-wrap:wrap}}
 /* ensure mobile action buttons always wrap and never overflow */
 .site-m-actions{flex-wrap:wrap!important;}
-.site-m-btn{flex:1 1 auto;min-width:0;}
+.site-m-btn{flex:1 1 auto;}
+.site-m-btn-activate{width:100%;flex:0 0 100%;}
 
 /* ── Preview Modal ── */
 .pvw-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:16px;animation:tcnIn .25s ease}
