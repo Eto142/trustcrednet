@@ -82,7 +82,7 @@
                             @endif
                         </td>
                         <td>
-                            <div class="d-flex gap-2">
+                            <div class="d-flex flex-wrap gap-2">
                                 @if(!$website->is_active || $website->isExpired())
                                 <button type="button" onclick="document.getElementById('activationOverlay').style.display='flex';" class="dash-btn dash-btn-primary dash-btn-sm">
                                     <i class="bi bi-lightning-charge-fill"></i> {{ $website->isExpired() ? 'Renew' : 'Activate' }}
@@ -449,6 +449,9 @@
 .tcn-later{display:block;margin:12px auto 18px;background:none;border:none;color:#9CA3AF;font-size:.78rem;cursor:pointer;padding:6px 12px}
 .tcn-later:hover{color:#6B7280}
 @media(max-width:480px){.tcn-modal{border-radius:14px;max-width:100%}.tcn-head{padding:20px 18px 14px}.tcn-section{padding:14px 18px 0}.tcn-note{margin:14px 18px 0}.tcn-tabs{flex-wrap:wrap}}
+/* ensure mobile action buttons always wrap and never overflow */
+.site-m-actions{flex-wrap:wrap!important;}
+.site-m-btn{flex:1 1 auto;min-width:0;}
 
 /* ── Preview Modal ── */
 .pvw-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.55);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:16px;animation:tcnIn .25s ease}
