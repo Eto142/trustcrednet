@@ -93,6 +93,6 @@ class WebsiteController extends Controller
 
     private function authorise(Website $website): void
     {
-        abort_unless($website->user_id === Auth::id(), 403);
+        abort_unless((int) $website->user_id === (int) Auth::id(), 403);
     }
 }
