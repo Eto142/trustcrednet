@@ -44,6 +44,36 @@
                 <div class="dash-form-help">All testimonials below will be added to this website.</div>
             </div>
 
+            {{-- Bulk paste --}}
+            <div class="dash-form-group" style="background:var(--tcn-bg-soft,#F9FAFB);border:1px solid var(--tcn-border);border-radius:10px;padding:1rem;">
+                <label class="dash-form-label" for="bulkPasteInput">
+                    <i class="bi bi-clipboard2-plus"></i> Bulk Paste
+                    <span style="color:var(--tcn-gray);font-weight:400;">(optional — fill every row below in one go)</span>
+                </label>
+                <div class="dash-form-help" style="margin-top:-4px;margin-bottom:8px;">
+                    Paste rows copied from a spreadsheet (columns in order: Name, Role, Email, Rating, Date, Content — separated by tabs),
+                    <u>or</u> loose paragraphs (one testimonial per paragraph, blank line between each, first line = name). Either style is auto-detected.
+                </div>
+                <textarea id="bulkPasteInput" class="dash-form-input" rows="5"
+                          placeholder="Jane Smith&#9;CEO at Acme&#9;jane@acme.com&#9;5&#9;2026-01-01&#9;Amazing product, saved us hours every week.
+John Doe&#9;Founder&#9;&#9;4&#9;&#9;Really solid support team, highly recommend.
+
+— or —
+
+Jane Smith
+Amazing product, saved us hours every week.
+
+John Doe
+Really solid support team, highly recommend."></textarea>
+                <div class="d-flex align-items-center gap-2 mt-2">
+                    <button type="button" id="bulkParseBtn" class="dash-btn dash-btn-primary dash-btn-sm">
+                        <i class="bi bi-magic"></i> Parse &amp; Fill Rows
+                    </button>
+                    <span id="bulkParseMsg" style="font-size:.82rem;color:var(--tcn-gray);"></span>
+                </div>
+                <div class="dash-form-help">This replaces the rows below with what you paste. You can still edit, add or remove rows manually afterwards.</div>
+            </div>
+
             <div id="testimonialRows"></div>
 
             <button type="button" id="addRowBtn" class="dash-btn dash-btn-outline mb-3">
@@ -160,7 +190,8 @@
 
     let rowCount = 0;
 
-    function addRow() {
+    function addRow(data) {
+        data = data || {};
         const index = rowCount++;
         const frag = template.content.cloneNode(true);
         const row  = frag.querySelector('.testimonial-row');
@@ -169,15 +200,29 @@
         row.querySelectorAll('[class*="field-"]').forEach(el => {
             const fieldClass = Array.from(el.classList).find(c => c.startsWith('field-'));
             const field = fieldClass.replace('field-', '');
+            el.name = `testimonials[${index}][${field}]`;
             if (el.type === 'checkbox') {
-                el.name = `testimonials[${index}][${field}]`;
                 el.value = '1';
-            } else if (el.type === 'radio') {
-                el.name = `testimonials[${index}][${field}]`;
-            } else {
-                el.name = `testimonials[${index}][${field}]`;
             }
         });
+
+        if (data.author_name)  row.querySelector('.field-author_name').value  = data.author_name;
+        if (data.author_role)  row.querySelector('.field-author_role').value  = data.author_role;
+        if (data.author_email) row.querySelector('.field-author_email').value = data.author_email;
+        if (data.reviewed_at)  row.querySelector('.field-reviewed_at').value  = data.reviewed_at;
+        if (data.content)      row.querySelector('.field-content').value      = data.content;
+
+        if (data.rating) {
+            const radio = row.querySelector(`.field-rating[value="${data.rating}"]`);
+            if (radio) {
+                radio.checked = true;
+                const picker = row.querySelector('.star-picker');
+                picker.querySelectorAll('i').forEach(star => {
+                    star.style.color = parseInt(star.dataset.val) <= data.rating ? '#F59E0B' : '#D1D5DB';
+                });
+                picker.querySelector('.rating-label').textContent = data.rating + ' / 5';
+            }
+        }
 
         rowsWrap.appendChild(frag);
         renumberRows();
@@ -237,7 +282,85 @@
         updateSaveLabel();
     });
 
-    addRowBtn.addEventListener('click', addRow);
+    addRowBtn.addEventListener('click', () => addRow());
+
+    // --- Bulk paste parsing ---
+    const bulkInput   = document.getElementById('bulkPasteInput');
+    const bulkBtn     = document.getElementById('bulkParseBtn');
+    const bulkMsg     = document.getElementById('bulkParseMsg');
+    const DATE_RE     = /^\d{4}-\d{2}-\d{2}$/;
+
+    function parseSpreadsheet(text) {
+        return text.split('\n')
+            .map(line => line.replace(/\r$/, ''))
+            .filter(line => line.trim() !== '')
+            .map(line => {
+                const cols = line.split('\t').map(c => c.trim());
+                const name = cols[0] || '';
+                const content = cols.length > 1 ? cols[cols.length - 1] : '';
+                const middle = cols.slice(1, cols.length - 1);
+                const row = { author_name: name, content: content };
+
+                // Middle columns map positionally onto [role, email, rating, date],
+                // but a value is only accepted into the slot it actually looks like.
+                const slots = ['author_role', 'author_email', 'rating', 'reviewed_at'];
+                let s = 0;
+                middle.forEach(val => {
+                    if (!val) { s++; return; }
+                    while (s < slots.length) {
+                        const slot = slots[s];
+                        if (slot === 'rating' && /^[1-5]$/.test(val)) { row.rating = parseInt(val); s++; return; }
+                        if (slot === 'reviewed_at' && DATE_RE.test(val)) { row.reviewed_at = val; s++; return; }
+                        if (slot === 'author_email' && val.indexOf('@') !== -1) { row.author_email = val; s++; return; }
+                        if (slot === 'author_role') { row.author_role = val; s++; return; }
+                        s++;
+                    }
+                });
+                return row;
+            })
+            .filter(row => row.author_name && row.content);
+    }
+
+    function parseParagraphs(text) {
+        return text.split(/\n\s*\n/)
+            .map(block => block.trim())
+            .filter(block => block !== '')
+            .map(block => {
+                const lines = block.split('\n').map(l => l.trim()).filter(l => l !== '');
+                return {
+                    author_name: lines[0] || '',
+                    content: lines.slice(1).join(' '),
+                };
+            })
+            .filter(row => row.author_name && row.content);
+    }
+
+    function parseBulkText(text) {
+        return text.indexOf('\t') !== -1 ? parseSpreadsheet(text) : parseParagraphs(text);
+    }
+
+    bulkBtn.addEventListener('click', function () {
+        const text = bulkInput.value;
+        if (!text.trim()) {
+            bulkMsg.textContent = 'Paste something first.';
+            bulkMsg.style.color = '#DC2626';
+            return;
+        }
+
+        const rows = parseBulkText(text);
+        if (rows.length === 0) {
+            bulkMsg.textContent = "Couldn't find any testimonials in that — check the format and try again.";
+            bulkMsg.style.color = '#DC2626';
+            return;
+        }
+
+        rowsWrap.innerHTML = '';
+        rowCount = 0;
+        rows.forEach(row => addRow(row));
+
+        bulkMsg.textContent = `Filled ${rows.length} testimonial${rows.length > 1 ? 's' : ''} below — review and save.`;
+        bulkMsg.style.color = 'var(--tcn-green)';
+    });
 
     // Start with one row
     addRow();
