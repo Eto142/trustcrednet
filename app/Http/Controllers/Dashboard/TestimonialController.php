@@ -161,6 +161,6 @@ class TestimonialController extends Controller
 
     private function authorise(Testimonial $testimonial): void
     {
-        abort_unless($testimonial->website->user_id === Auth::id(), 403);
+        abort_unless((int) $testimonial->website->user_id === (int) Auth::id(), 403);
     }
 }

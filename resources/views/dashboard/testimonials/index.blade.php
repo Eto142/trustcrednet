@@ -221,7 +221,7 @@
             @endforeach
         </div>
 
-        <div style="padding:16px 24px;">{{ $testimonials->appends(request()->query())->links() }}</div>
+        <div class="tm-pagination">{{ $testimonials->appends(request()->query())->links('pagination::bootstrap-5') }}</div>
     @endif
 
 </div>
@@ -369,5 +369,55 @@
 .tm-action-edit:hover { border-color: var(--tcn-green-muted); background: var(--tcn-green-pale); color: var(--tcn-green-dark); text-decoration: none; }
 .tm-action-delete { background: transparent; border-color: #FECACA; color: #DC2626; padding: 8px 12px; }
 .tm-action-delete:hover { background: #FEF2F2; }
+
+/* Pagination */
+.tm-pagination {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid var(--tcn-border);
+}
+.tm-pagination nav > div:first-child { display: none; }
+.tm-pagination nav > div:last-child {
+    display: flex !important;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.tm-pagination p { margin: 0; }
+.tm-pagination .pagination {
+    margin: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+}
+.tm-pagination .page-link {
+    border: 1px solid var(--tcn-border);
+    border-radius: 8px;
+    color: var(--tcn-body);
+    font-size: .82rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    transition: var(--tcn-transition);
+}
+.tm-pagination .page-link:hover {
+    background: var(--tcn-green-pale);
+    border-color: var(--tcn-green-muted);
+    color: var(--tcn-green-dark);
+}
+.tm-pagination .page-item.active .page-link {
+    background: var(--tcn-green);
+    border-color: var(--tcn-green);
+    color: #fff;
+}
+.tm-pagination .page-item.disabled .page-link {
+    background: transparent;
+    color: var(--tcn-gray);
+    opacity: .5;
+}
+@media (min-width: 576px) {
+    .tm-pagination nav > div:last-child { flex-direction: row; justify-content: space-between; }
+}
 </style>
 @endpush
