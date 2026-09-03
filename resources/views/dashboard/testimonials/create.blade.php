@@ -1,15 +1,15 @@
 @extends('dashboard.layouts.app')
-@section('title', 'Add Testimonial – TrustCredNet')
-@section('page-title', 'Add Testimonial')
+@section('title', 'Add Testimonials – TrustCredNet')
+@section('page-title', 'Add Testimonials')
 
 @section('content')
 
 <div class="row">
-<div class="col-lg-8">
+<div class="col-lg-9">
 
 <div class="dash-card">
     <div class="dash-card-header">
-        <h2 class="dash-card-title">New Testimonial</h2>
+        <h2 class="dash-card-title">New Testimonials</h2>
         <a href="{{ route('dashboard.testimonials.index') }}" class="dash-btn dash-btn-outline dash-btn-sm">
             <i class="bi bi-arrow-left"></i> Back
         </a>
@@ -25,10 +25,10 @@
             </a>
         </div>
     @else
-        <form method="POST" action="{{ route('dashboard.testimonials.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('dashboard.testimonials.store') }}" enctype="multipart/form-data" id="batchForm">
             @csrf
 
-            {{-- Website --}}
+            {{-- Website (shared by the whole batch) --}}
             <div class="dash-form-group">
                 <label class="dash-form-label" for="website_id">Website <span style="color:#DC2626;">*</span></label>
                 <select id="website_id" name="website_id"
@@ -41,127 +41,18 @@
                     @endforeach
                 </select>
                 @error('website_id') <div class="dash-form-error">{{ $message }}</div> @enderror
+                <div class="dash-form-help">All testimonials below will be added to this website.</div>
             </div>
 
-            {{-- Customer Name + Role --}}
-            <div class="row g-3">
-                <div class="col-sm-6">
-                    <div class="dash-form-group">
-                        <label class="dash-form-label" for="author_name">
-                            Customer Name <span style="color:#DC2626;">*</span>
-                        </label>
-                        <input type="text" id="author_name" name="author_name"
-                               value="{{ old('author_name') }}"
-                               class="dash-form-input {{ $errors->has('author_name') ? 'is-invalid' : '' }}"
-                               placeholder="e.g. Jane Smith" required>
-                        @error('author_name') <div class="dash-form-error">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="dash-form-group">
-                        <label class="dash-form-label" for="author_role">
-                            Role / Company <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span>
-                        </label>
-                        <input type="text" id="author_role" name="author_role"
-                               value="{{ old('author_role') }}"
-                               class="dash-form-input {{ $errors->has('author_role') ? 'is-invalid' : '' }}"
-                               placeholder="e.g. CEO at Acme Inc.">
-                        @error('author_role') <div class="dash-form-error">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-            </div>
+            <div id="testimonialRows"></div>
 
-            {{-- Email + Date --}}
-            <div class="row g-3">
-                <div class="col-sm-6">
-                    <div class="dash-form-group">
-                        <label class="dash-form-label" for="author_email">
-                            Customer Email <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span>
-                        </label>
-                        <input type="email" id="author_email" name="author_email"
-                               value="{{ old('author_email') }}"
-                               class="dash-form-input {{ $errors->has('author_email') ? 'is-invalid' : '' }}"
-                               placeholder="jane@example.com">
-                        @error('author_email') <div class="dash-form-error">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="dash-form-group">
-                        <label class="dash-form-label" for="reviewed_at">
-                            Date of Review <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span>
-                        </label>
-                        <input type="date" id="reviewed_at" name="reviewed_at"
-                               value="{{ old('reviewed_at', now()->toDateString()) }}"
-                               class="dash-form-input {{ $errors->has('reviewed_at') ? 'is-invalid' : '' }}">
-                        @error('reviewed_at') <div class="dash-form-error">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-            </div>
+            <button type="button" id="addRowBtn" class="dash-btn dash-btn-outline mb-3">
+                <i class="bi bi-plus-lg"></i> Add Another Testimonial
+            </button>
 
-            {{-- Rating --}}
-            <div class="dash-form-group">
-                <label class="dash-form-label">Rating <span style="color:#DC2626;">*</span></label>
-                <div class="d-flex align-items-center gap-2" id="starPicker">
-                    @for($i = 1; $i <= 5; $i++)
-                    <label style="cursor:pointer;">
-                        <input type="radio" name="rating" value="{{ $i }}"
-                               {{ old('rating', 5) == $i ? 'checked' : '' }}
-                               style="display:none;" class="star-radio">
-                        <i class="bi bi-star-fill"
-                           style="font-size:2rem;color:{{ old('rating', 5) >= $i ? '#F59E0B' : '#D1D5DB' }};transition:color .15s;"
-                           data-val="{{ $i }}"></i>
-                    </label>
-                    @endfor
-                    <span id="ratingLabel" style="font-size:.85rem;font-weight:600;color:var(--tcn-gray);margin-left:8px;">
-                        {{ old('rating', 5) }} / 5
-                    </span>
-                </div>
-                @error('rating') <div class="dash-form-error">{{ $message }}</div> @enderror
-            </div>
-
-            {{-- Testimonial Text --}}
-            <div class="dash-form-group">
-                <label class="dash-form-label" for="content">
-                    Testimonial Text <span style="color:#DC2626;">*</span>
-                </label>
-                <textarea id="content" name="content" rows="5"
-                          class="dash-form-input {{ $errors->has('content') ? 'is-invalid' : '' }}"
-                          placeholder="What did the customer say about your product or service?" required>{{ old('content') }}</textarea>
-                @error('content') <div class="dash-form-error">{{ $message }}</div> @enderror
-            </div>
-
-            {{-- Customer Image --}}
-            <div class="dash-form-group">
-                <label class="dash-form-label" for="customer_image">
-                    Customer Photo <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span>
-                </label>
-                <div class="d-flex align-items-center gap-3">
-                    <div id="imgPreviewWrap" style="display:none;">
-                        <img id="imgPreview"
-                             style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--tcn-border);">
-                    </div>
-                    <input type="file" id="customer_image" name="customer_image" accept="image/*"
-                           class="dash-form-input {{ $errors->has('customer_image') ? 'is-invalid' : '' }}"
-                           style="padding:8px 14px;">
-                </div>
-                <div class="dash-form-help">JPG, PNG or WEBP · Max 2 MB. Displayed as a round avatar next to the testimonial.</div>
-                @error('customer_image') <div class="dash-form-error">{{ $message }}</div> @enderror
-            </div>
-
-            {{-- Featured --}}
-            <div class="dash-form-group">
-                <label class="d-flex align-items-center gap-2" style="cursor:pointer;">
-                    <input type="checkbox" name="is_featured" value="1" id="is_featured"
-                           {{ old('is_featured') ? 'checked' : '' }}
-                           style="width:16px;height:16px;accent-color:var(--tcn-green);cursor:pointer;">
-                    <span class="dash-form-label" style="margin:0;">Mark as Featured</span>
-                </label>
-                <div class="dash-form-help">Featured testimonials are highlighted in your widget.</div>
-            </div>
-
-            <div class="d-flex gap-2 mt-4">
+            <div class="d-flex gap-2 mt-2">
                 <button type="submit" class="dash-btn dash-btn-primary">
-                    <i class="bi bi-check-lg"></i> Save Testimonial
+                    <i class="bi bi-check-lg"></i> Save Testimonial<span class="saveCountLabel"></span>
                 </button>
                 <a href="{{ route('dashboard.testimonials.index') }}" class="dash-btn dash-btn-outline">Cancel</a>
             </div>
@@ -172,155 +63,184 @@
 </div>
 </div>
 
-@endsection
-
-@section('scripts')
-<script>
-    // Star picker
-    const stars = document.querySelectorAll('.star-radio');
-    stars.forEach(radio => {
-        radio.addEventListener('change', () => {
-            const val = parseInt(radio.value);
-            document.querySelectorAll('#starPicker i').forEach(star => {
-                star.style.color = parseInt(star.dataset.val) <= val ? '#F59E0B' : '#D1D5DB';
-            });
-            document.getElementById('ratingLabel').textContent = val + ' / 5';
-        });
-    });
-
-    // Image preview
-    document.getElementById('customer_image').addEventListener('change', function () {
-        const file = this.files[0];
-        if (!file) return;
-        const wrap = document.getElementById('imgPreviewWrap');
-        const img  = document.getElementById('imgPreview');
-        img.src = URL.createObjectURL(file);
-        wrap.style.display = 'block';
-    });
-</script>
-@endsection
-
-
-@section('content')
-
-<div class="row">
-<div class="col-lg-7">
-
-<div class="dash-card">
-    <div class="dash-card-header">
-        <h2 class="dash-card-title">New Testimonial</h2>
-        <a href="{{ route('dashboard.testimonials.index') }}" class="dash-btn dash-btn-outline dash-btn-sm">
-            <i class="bi bi-arrow-left"></i> Back
-        </a>
-    </div>
-
-    @if($websites->isEmpty())
-        <div class="dash-empty">
-            <i class="bi bi-globe2"></i>
-            <div class="dash-empty-title">No websites yet</div>
-            <p class="dash-empty-sub">You need to add a website before you can add testimonials.</p>
-            <a href="{{ route('dashboard.websites.create') }}" class="dash-btn dash-btn-primary">
-                <i class="bi bi-plus-lg"></i> Add a Website
-            </a>
+{{-- Row template --}}
+<template id="rowTemplate">
+    <div class="testimonial-row dash-card" style="border:1px dashed var(--tcn-border);margin-bottom:1.25rem;padding:1.25rem;position:relative;">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="row-number" style="font-weight:600;color:var(--tcn-gray);"></span>
+            <button type="button" class="dash-btn dash-btn-outline dash-btn-sm remove-row-btn" style="color:#DC2626;border-color:#DC2626;">
+                <i class="bi bi-trash"></i> Remove
+            </button>
         </div>
-    @else
-        <form method="POST" action="{{ route('dashboard.testimonials.store') }}">
-            @csrf
 
-            <div class="dash-form-group">
-                <label class="dash-form-label" for="website_id">Website <span style="color:#DC2626;">*</span></label>
-                <select id="website_id" name="website_id"
-                        class="dash-form-input {{ $errors->has('website_id') ? 'is-invalid' : '' }}" required>
-                    <option value="">— Select a website —</option>
-                    @foreach($websites as $site)
-                        <option value="{{ $site->id }}" {{ old('website_id') == $site->id ? 'selected' : '' }}>
-                            {{ $site->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('website_id') <div class="dash-form-error">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="row g-3">
-                <div class="col-sm-6">
-                    <div class="dash-form-group">
-                        <label class="dash-form-label" for="author_name">Author Name <span style="color:#DC2626;">*</span></label>
-                        <input type="text" id="author_name" name="author_name" value="{{ old('author_name') }}"
-                               class="dash-form-input {{ $errors->has('author_name') ? 'is-invalid' : '' }}"
-                               placeholder="Jane Smith" required>
-                        @error('author_name') <div class="dash-form-error">{{ $message }}</div> @enderror
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="dash-form-group">
-                        <label class="dash-form-label" for="author_email">Author Email <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span></label>
-                        <input type="email" id="author_email" name="author_email" value="{{ old('author_email') }}"
-                               class="dash-form-input {{ $errors->has('author_email') ? 'is-invalid' : '' }}"
-                               placeholder="jane@example.com">
-                        @error('author_email') <div class="dash-form-error">{{ $message }}</div> @enderror
-                    </div>
+        {{-- Customer Name + Role --}}
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <div class="dash-form-group">
+                    <label class="dash-form-label">Customer Name <span style="color:#DC2626;">*</span></label>
+                    <input type="text" class="dash-form-input field-author_name" placeholder="e.g. Jane Smith" required>
                 </div>
             </div>
-
-            <div class="dash-form-group">
-                <label class="dash-form-label" for="content">Testimonial Content <span style="color:#DC2626;">*</span></label>
-                <textarea id="content" name="content" rows="4"
-                          class="dash-form-input {{ $errors->has('content') ? 'is-invalid' : '' }}"
-                          placeholder="What did the customer say?" required>{{ old('content') }}</textarea>
-                @error('content') <div class="dash-form-error">{{ $message }}</div> @enderror
-            </div>
-
-            <div class="dash-form-group">
-                <label class="dash-form-label">Rating <span style="color:#DC2626;">*</span></label>
-                <div class="d-flex gap-2" id="starPicker">
-                    @for($i = 5; $i >= 1; $i--)
-                    <label style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;">
-                        <input type="radio" name="rating" value="{{ $i }}"
-                               {{ old('rating', 5) == $i ? 'checked' : '' }}
-                               style="display:none;" class="star-radio">
-                        <i class="bi bi-star-fill" style="font-size:1.6rem;color:{{ old('rating', 5) >= $i ? '#F59E0B' : '#D1D5DB' }};transition:color .15s;"
-                           data-val="{{ $i }}"></i>
-                        <span style="font-size:.72rem;color:var(--tcn-gray);">{{ $i }}</span>
-                    </label>
-                    @endfor
+            <div class="col-sm-6">
+                <div class="dash-form-group">
+                    <label class="dash-form-label">Role / Company <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span></label>
+                    <input type="text" class="dash-form-input field-author_role" placeholder="e.g. CEO at Acme Inc.">
                 </div>
-                @error('rating') <div class="dash-form-error">{{ $message }}</div> @enderror
             </div>
+        </div>
 
-            <div class="dash-form-group">
-                <label class="d-flex align-items-center gap-2" style="cursor:pointer;">
-                    <input type="checkbox" name="is_featured" value="1" id="is_featured"
-                           {{ old('is_featured') ? 'checked' : '' }}
-                           style="width:16px;height:16px;accent-color:var(--tcn-green);cursor:pointer;">
-                    <span class="dash-form-label" style="margin:0;">Mark as Featured</span>
+        {{-- Email + Date --}}
+        <div class="row g-3">
+            <div class="col-sm-6">
+                <div class="dash-form-group">
+                    <label class="dash-form-label">Customer Email <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span></label>
+                    <input type="email" class="dash-form-input field-author_email" placeholder="jane@example.com">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="dash-form-group">
+                    <label class="dash-form-label">Date of Review <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span></label>
+                    <input type="date" class="dash-form-input field-reviewed_at">
+                </div>
+            </div>
+        </div>
+
+        {{-- Rating --}}
+        <div class="dash-form-group">
+            <label class="dash-form-label">Rating <span style="color:#DC2626;">*</span></label>
+            <div class="d-flex align-items-center gap-2 star-picker">
+                @for($i = 1; $i <= 5; $i++)
+                <label style="cursor:pointer;">
+                    <input type="radio" class="star-radio field-rating" value="{{ $i }}" {{ $i == 5 ? 'checked' : '' }} style="display:none;">
+                    <i class="bi bi-star-fill" style="font-size:1.75rem;color:{{ $i <= 5 ? '#F59E0B' : '#D1D5DB' }};transition:color .15s;" data-val="{{ $i }}"></i>
                 </label>
-                <div class="dash-form-help">Featured testimonials are highlighted in your widget.</div>
+                @endfor
+                <span class="rating-label" style="font-size:.85rem;font-weight:600;color:var(--tcn-gray);margin-left:8px;">5 / 5</span>
             </div>
+        </div>
 
-            <div class="d-flex gap-2 mt-4">
-                <button type="submit" class="dash-btn dash-btn-primary">
-                    <i class="bi bi-check-lg"></i> Save Testimonial
-                </button>
-                <a href="{{ route('dashboard.testimonials.index') }}" class="dash-btn dash-btn-outline">Cancel</a>
+        {{-- Content --}}
+        <div class="dash-form-group">
+            <label class="dash-form-label">Testimonial Text <span style="color:#DC2626;">*</span></label>
+            <textarea class="dash-form-input field-content" rows="4" placeholder="What did the customer say about your product or service?" required></textarea>
+        </div>
+
+        {{-- Customer Image --}}
+        <div class="dash-form-group">
+            <label class="dash-form-label">Customer Photo <span style="color:var(--tcn-gray);font-weight:400;">(optional)</span></label>
+            <div class="d-flex align-items-center gap-3">
+                <div class="img-preview-wrap" style="display:none;">
+                    <img class="img-preview" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--tcn-border);">
+                </div>
+                <input type="file" class="dash-form-input field-customer_image" accept="image/*" style="padding:8px 14px;">
             </div>
-        </form>
-    @endif
-</div>
+            <div class="dash-form-help">JPG, PNG or WEBP · Max 2 MB.</div>
+        </div>
 
-</div>
-</div>
+        {{-- Featured --}}
+        <div class="dash-form-group mb-0">
+            <label class="d-flex align-items-center gap-2" style="cursor:pointer;">
+                <input type="checkbox" class="field-is_featured" style="width:16px;height:16px;accent-color:var(--tcn-green);cursor:pointer;">
+                <span class="dash-form-label" style="margin:0;">Mark as Featured</span>
+            </label>
+        </div>
+    </div>
+</template>
 
 @endsection
 
 @section('scripts')
 <script>
-    document.querySelectorAll('.star-radio').forEach(radio => {
-        radio.addEventListener('change', () => {
-            const val = parseInt(radio.value);
-            document.querySelectorAll('#starPicker i').forEach(star => {
+(function () {
+    const rowsWrap   = document.getElementById('testimonialRows');
+    const template   = document.getElementById('rowTemplate');
+    const addRowBtn  = document.getElementById('addRowBtn');
+    const form       = document.getElementById('batchForm');
+    if (!form) return;
+
+    let rowCount = 0;
+
+    function addRow() {
+        const index = rowCount++;
+        const frag = template.content.cloneNode(true);
+        const row  = frag.querySelector('.testimonial-row');
+        row.dataset.index = index;
+
+        row.querySelectorAll('[class*="field-"]').forEach(el => {
+            const fieldClass = Array.from(el.classList).find(c => c.startsWith('field-'));
+            const field = fieldClass.replace('field-', '');
+            if (el.type === 'checkbox') {
+                el.name = `testimonials[${index}][${field}]`;
+                el.value = '1';
+            } else if (el.type === 'radio') {
+                el.name = `testimonials[${index}][${field}]`;
+            } else {
+                el.name = `testimonials[${index}][${field}]`;
+            }
+        });
+
+        rowsWrap.appendChild(frag);
+        renumberRows();
+        updateRemoveButtons();
+        updateSaveLabel();
+    }
+
+    function renumberRows() {
+        rowsWrap.querySelectorAll('.testimonial-row').forEach((row, i) => {
+            row.querySelector('.row-number').textContent = 'Testimonial #' + (i + 1);
+        });
+    }
+
+    function updateRemoveButtons() {
+        const rows = rowsWrap.querySelectorAll('.testimonial-row');
+        rows.forEach(row => {
+            row.querySelector('.remove-row-btn').style.display = rows.length > 1 ? '' : 'none';
+        });
+    }
+
+    function updateSaveLabel() {
+        const count = rowsWrap.querySelectorAll('.testimonial-row').length;
+        document.querySelector('.saveCountLabel').textContent = count > 1 ? ` (${count})` : '';
+    }
+
+    // Star picker (event delegation)
+    rowsWrap.addEventListener('change', function (e) {
+        if (e.target.classList.contains('star-radio')) {
+            const picker = e.target.closest('.star-picker');
+            const val = parseInt(e.target.value);
+            picker.querySelectorAll('i').forEach(star => {
                 star.style.color = parseInt(star.dataset.val) <= val ? '#F59E0B' : '#D1D5DB';
             });
-        });
+            picker.querySelector('.rating-label').textContent = val + ' / 5';
+        }
+
+        if (e.target.classList.contains('field-customer_image')) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const row  = e.target.closest('.testimonial-row');
+            const wrap = row.querySelector('.img-preview-wrap');
+            const img  = row.querySelector('.img-preview');
+            img.src = URL.createObjectURL(file);
+            wrap.style.display = 'block';
+        }
     });
+
+    // Remove row
+    rowsWrap.addEventListener('click', function (e) {
+        const btn = e.target.closest('.remove-row-btn');
+        if (!btn) return;
+        const rows = rowsWrap.querySelectorAll('.testimonial-row');
+        if (rows.length <= 1) return;
+        btn.closest('.testimonial-row').remove();
+        renumberRows();
+        updateRemoveButtons();
+        updateSaveLabel();
+    });
+
+    addRowBtn.addEventListener('click', addRow);
+
+    // Start with one row
+    addRow();
+})();
 </script>
 @endsection

@@ -42,41 +42,46 @@ class TestimonialController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'website_id'     => ['required', 'integer'],
-            'author_name'    => ['required', 'string', 'max:255'],
-            'author_email'   => ['nullable', 'email', 'max:255'],
-            'author_role'    => ['nullable', 'string', 'max:255'],
-            'content'        => ['required', 'string', 'max:2000'],
-            'rating'         => ['required', 'integer', 'min:1', 'max:5'],
-            'reviewed_at'    => ['nullable', 'date'],
-            'customer_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'is_featured'    => ['nullable', 'boolean'],
+            'website_id'                    => ['required', 'integer'],
+            'testimonials'                   => ['required', 'array', 'min:1'],
+            'testimonials.*.author_name'    => ['required', 'string', 'max:255'],
+            'testimonials.*.author_email'   => ['nullable', 'email', 'max:255'],
+            'testimonials.*.author_role'    => ['nullable', 'string', 'max:255'],
+            'testimonials.*.content'        => ['required', 'string', 'max:2000'],
+            'testimonials.*.rating'         => ['required', 'integer', 'min:1', 'max:5'],
+            'testimonials.*.reviewed_at'    => ['nullable', 'date'],
+            'testimonials.*.customer_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'testimonials.*.is_featured'    => ['nullable', 'boolean'],
         ]);
 
         // Ensure the website belongs to this user
         $website = Auth::user()->websites()->findOrFail($data['website_id']);
 
-        $imagePath = null;
-        if ($request->hasFile('customer_image')) {
-            $disk      = Storage::disk('cloudinary');
-            $path      = $disk->putFile('trustcrednet/testimonials', $request->file('customer_image'));
-            $imagePath = $disk->url($path);
+        foreach ($data['testimonials'] as $index => $row) {
+            $imagePath = null;
+            if ($request->hasFile("testimonials.{$index}.customer_image")) {
+                $disk      = Storage::disk('cloudinary');
+                $path      = $disk->putFile('trustcrednet/testimonials', $request->file("testimonials.{$index}.customer_image"));
+                $imagePath = $disk->url($path);
+            }
+
+            $website->testimonials()->create([
+                'author_name'    => $row['author_name'],
+                'author_email'   => $row['author_email'] ?? null,
+                'author_role'    => $row['author_role'] ?? null,
+                'customer_image' => $imagePath,
+                'reviewed_at'    => $row['reviewed_at'] ?? now()->toDateString(),
+                'content'        => $row['content'],
+                'rating'         => $row['rating'],
+                'status'         => 'approved',
+                'is_featured'    => (bool) ($row['is_featured'] ?? false),
+            ]);
         }
 
-        $website->testimonials()->create([
-            'author_name'    => $data['author_name'],
-            'author_email'   => $data['author_email'] ?? null,
-            'author_role'    => $data['author_role'] ?? null,
-            'customer_image' => $imagePath,
-            'reviewed_at'    => $data['reviewed_at'] ?? now()->toDateString(),
-            'content'        => $data['content'],
-            'rating'         => $data['rating'],
-            'status'         => 'approved',
-            'is_featured'    => $request->boolean('is_featured'),
-        ]);
+        $count = count($data['testimonials']);
 
         return redirect()->route('dashboard.testimonials.index')
-            ->with('success', 'Testimonial added successfully.');
+            ->with('success', $count > 1 ? "{$count} testimonials added successfully." : 'Testimonial added successfully.');
     }
 
     public function edit(Testimonial $testimonial): View
