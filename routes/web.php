@@ -43,6 +43,7 @@ Route::prefix('dashboard')->name('dashboard.')->middleware('auth')->group(functi
 
     Route::resource('websites',     WebsiteController::class)->except(['show']);
     Route::resource('testimonials', TestimonialController::class)->except(['show']);
+    Route::delete('testimonials', [TestimonialController::class, 'destroyAll'])->name('testimonials.destroyAll');
     Route::post('testimonials/{testimonial}/approve', [TestimonialController::class, 'approve'])->name('testimonials.approve');
     Route::post('testimonials/{testimonial}/reject',  [TestimonialController::class, 'reject'])->name('testimonials.reject');
 

@@ -39,6 +39,24 @@ class TestimonialController extends Controller
         return view('dashboard.testimonials.create', compact('websites'));
     }
 
+    public function destroyAll(Request $request): RedirectResponse
+    {
+        $status = $request->get('status', 'all');
+        $query  = Testimonial::forUser(Auth::id());
+
+        if ($status !== 'all') {
+            $query->where('status', $status);
+        }
+
+        $count = $query->count();
+        $query->delete();
+
+        return redirect()->route('dashboard.testimonials.index', ['status' => $status])
+            ->with('success', $count > 0
+                ? $count . ' testimonial' . ($count > 1 ? 's' : '') . ' deleted.'
+                : 'No testimonials to delete.');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([

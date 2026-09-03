@@ -22,9 +22,21 @@
             </a>
             @endforeach
         </div>
-        <a href="{{ route('dashboard.testimonials.create') }}" class="dash-btn dash-btn-primary dash-btn-sm tm-add-btn">
-            <i class="bi bi-plus-lg"></i> Add Testimonial
-        </a>
+        <div class="d-flex gap-2 tm-add-btn">
+            @if(($counts[$status] ?? 0) > 0)
+                <form method="POST" action="{{ route('dashboard.testimonials.destroyAll', ['status' => $status]) }}"
+                      onsubmit="return confirm('{{ $status === 'all' ? 'Delete ALL '.$counts[$status].' testimonial(s)? This cannot be undone.' : 'Delete all '.$counts[$status].' '.$status.' testimonial(s)? This cannot be undone.' }}')">
+                    @csrf @method('DELETE')
+                    <input type="hidden" name="status" value="{{ $status }}">
+                    <button type="submit" class="dash-btn dash-btn-outline dash-btn-sm" style="color:#DC2626;border-color:#FECACA;">
+                        <i class="bi bi-trash3"></i> Clear {{ $status === 'all' ? 'All' : ucfirst($status) }}
+                    </button>
+                </form>
+            @endif
+            <a href="{{ route('dashboard.testimonials.create') }}" class="dash-btn dash-btn-primary dash-btn-sm">
+                <i class="bi bi-plus-lg"></i> Add Testimonial
+            </a>
+        </div>
     </div>
 
     <div style="height:1px;background:var(--tcn-border);"></div>
